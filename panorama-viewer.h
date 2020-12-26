@@ -45,8 +45,6 @@ class panoramaViewer: public QWidget,
 Q_OBJECT
 public:
 		panoramaViewer	(QSettings *, 
-	                         int,		// minFreq
-	                         int,		// maxFreq
 	                         QWidget *parent = NULL);
 		~panoramaViewer	(void);
 
@@ -56,6 +54,7 @@ private:
 	int		minFreq;
 	int		fftFreq;
 	int		segmentCoverage;
+	float		overlapFraction;
 	int		nrSegments;
 	int		startFreq;
 	int		displaySize;
@@ -72,6 +71,7 @@ public slots:
 	void		closeEvent		(QCloseEvent *event);
 	void		handle_pauseButton	();
 	void		handle_clickedwithRight	(int);
+	void		handle_startButton	();
 };
 
 #endif

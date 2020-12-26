@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>257</height>
+    <height>285</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,13 @@
      </item>
      <item>
       <widget class="QComboBox" name="deviceSelector"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="startButton">
+       <property name="text">
+        <string>(re)start</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

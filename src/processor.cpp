@@ -99,18 +99,12 @@ double displayVector	[displaySize];
 	         usleep (1000000);
 	         continue;
 	      }
-//	      usleep (100000);
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
-	      while  (theDevice -> Samples () < ZZ * fftSize) {
+	      while (theDevice -> Samples () < 2 * fftSize)
 	         usleep (1000);
-	      }
-	      theDevice	-> resetBuffer ();
-	      while (theDevice -> Samples () < fftSize)
-	         usleep (1000);
+	      theDevice	-> getSamples (Buffer, fftSize); // one to ignore
 	      theDevice	-> getSamples (Buffer, fftSize);
-//	      theDevice	-> stopReader ();
-//	      theDevice	-> resetBuffer ();
 	      process_segment (i, Buffer, displayVector);
 	   }
 	   _C_Buffer  -> putDataIntoBuffer (displayVector, displaySize);

@@ -61,8 +61,6 @@ int32_t res     = 1;
 }
 
 	panoramaViewer::panoramaViewer (QSettings	*Si,
-	                                int		minFreq,
-	                                int		maxFreq,
 	                                QWidget		*parent):
 	                                           QWidget (parent),
 	                                           _C_Buffer (1024 * 1024) {
@@ -74,6 +72,7 @@ int k;
 	lowEnd		-> setValue (minFreq);
 	maxFreq		= spectrumSettings -> value ("highEnd", 240). toInt ();
 	highEnd		-> setValue (maxFreq);
+	overlapFraction	= spectrumSettings	-> value ("fraction", 0.875). toFloat ();
 	this -> show ();
 
 #ifdef	HAVE_SDRPLAY
@@ -104,7 +103,6 @@ int k;
 }
 
 void	panoramaViewer::activateDevice (const QString &s) {
-
 #ifdef	HAVE_SDRPLAY
 	if (s == "sdrplay-v2") {
 	   try {
@@ -151,7 +149,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	      return;
 	   }
 	}
-	else 
+	else 	// cannot happen
 #endif
 	{  QMessageBox::warning (this, tr ("panorama"),
 	                              tr ("something went wrong, call an expert\n"));
@@ -161,13 +159,26 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	disconnect (deviceSelector, SIGNAL (activated (const QString &)),
 	            this, SLOT (activateDevice (const QString &)));
 
+	connect (startButton, SIGNAL (clicked ()),
+	         this, SLOT (handle_startButton ()));
+	connect (pauseButton, SIGNAL (clicked ()),
+	         this, SLOT (handle_pauseButton ()));
+	this	-> fftFreq	= theDevice -> get_fftWidth ();
+	theScope		= nullptr;
+	theProcessor		= nullptr;
+}
+
+void	panoramaViewer::handle_startButton () {
+	if (theProcessor != nullptr)
+	   delete theProcessor;
+	if (theScope != nullptr)
+	   delete theScope;
 	this	-> minFreq		= MHz (lowEnd  -> value ()); 
 	this	-> maxFreq		= MHz (highEnd -> value ());
-	this	-> fftFreq		= theDevice -> get_fftWidth ();
-	this	-> segmentCoverage	= 0.875 * fftFreq;
+	this	-> segmentCoverage	= overlapFraction * fftFreq;
 	this	-> nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
-	this	-> startFreq		= minFreq + 0.375 * fftFreq;
-	this	-> displaySize		= nrSegments * 0.875 * SEGMENT_SIZE;
+	this	-> startFreq		= minFreq + (overlapFraction - 0.5) * fftFreq;
+	this	-> displaySize		= nrSegments * overlapFraction * SEGMENT_SIZE;
 	this	-> maxFreq		= minFreq + nrSegments * segmentCoverage;
 	theScope	= new Scope (panoramaScope,
 	                             displaySize,
@@ -187,8 +198,6 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	                                 OVERLAP_SIZE);
 	connect (theProcessor, SIGNAL (showDisplay ()),
 	         this, SLOT (handle_showDisplay ()));
-	connect (pauseButton, SIGNAL (clicked ()),
-	         this, SLOT (handle_pauseButton ()));
 
 	theProcessor	-> start ();
 }
@@ -199,9 +208,9 @@ void	panoramaViewer::TerminateProcess () {
 	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
 	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
 	spectrumSettings	-> sync ();
-	delete	theProcessor;
-	delete	theScope;
-	delete	theDevice;
+	delete		theProcessor;
+	delete		theScope;
+	delete		theDevice;
 	fprintf (stderr, "End of termination procedure");
 }
 

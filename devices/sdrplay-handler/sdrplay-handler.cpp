@@ -294,6 +294,7 @@ ULONG APIkeyValue_length = 255;
 	lnaGRdBDisplay          -> display (get_lnaGRdB (hwVersion,
 	                                   lnaGainSetting -> value ()));
 
+	freqChanging. store (false);
 	running. store (false);
 }
 
@@ -441,6 +442,10 @@ float	denominator	= p -> denominator;
 	if (reset || hwRemoved)
 	   return;
 
+	if (rfChanged) 
+	   p -> freqChanging. store (false);
+	if (p -> freqChanging. load ())
+	   return;
 	for (i = 0; i <  (int)numSamples; i ++)
 	   localBuf [i] = std::complex<float> (float (xi [i]) / denominator,
 	                                       float (xq [i]) / denominator);
@@ -538,6 +543,7 @@ int     lnaState        = lnaGainSetting        -> value ();
 
 	if (vfoFrequency == newFrequency)
 	   return;
+	
 	err = my_mir_sdr_Reinit (&GRdB,
 	                         double (inputRate) / Mhz (1),
 	                         double (newFrequency) / Mhz (1),
@@ -554,6 +560,7 @@ int     lnaState        = lnaGainSetting        -> value ();
 	                    errorCodes (err). toLatin1 (). data ());
 	else
 	   vfoFrequency = newFrequency;
+	freqChanging. store (true);
 }
 
 void	sdrplayHandler::stopReader	(void) {

@@ -7,11 +7,11 @@
 TEMPLATE	= app
 TARGET		= panoramaViewer
 QT		+= widgets
-#QMAKE_CFLAGS    +=  -O3 -ffast-math
-#QMAKE_CXXFLAGS  +=  -O3 -ffast-math
-QMAKE_CFLAGS   +=  -g
-QMAKE_CXXFLAGS +=  -g
-QMAKE_LFLAGS   +=  -g
+QMAKE_CFLAGS    +=  -O3 -ffast-math
+QMAKE_CXXFLAGS  +=  -O3 -ffast-math
+#QMAKE_CFLAGS   +=  -g
+#QMAKE_CXXFLAGS +=  -g
+#QMAKE_LFLAGS   +=  -g
 QMAKE_CXXFLAGS += -isystem $$[QT_INSTALL_HEADERS]
 RC_ICONS        =  viewer.ico
 RESOURCES       += resources.qrc
@@ -73,7 +73,7 @@ CONFIG		+= colibri
 ## and for windows32 we use:
 win32 {
 CONFIG		-= console 
-DESTDIR		= /usr/shared/w32-programs/windows-spectrumviewer
+DESTDIR		= /usr/shared/w32-programs/windows-panoramaviewer
 
 exists ("./.git") {
    GITHASHSTRING = $$system(git rev-parse --short HEAD)
@@ -100,27 +100,13 @@ LIBS		+= -lwinmm
 LIBS 		+= -lstdc++
 LIBS		+= -lusb-1.0
 LIBS		+= -lpthread
-CONFIG		+= dabstick
-CONFIG		+= airspy
 CONFIG		+= sdrplay
-#CONFIG		+= pluto
-#CONFIG		+= soundcard
-CONFIG		+= hackrf
-#CONFIG		+= lime
-#CONFIG		+= extio
+CONFIG		+= sdrplay-v3
+CONFIG		+= extio
 CONFIG		+= colibri
 }
 #
 #	the devices
-dabstick {
-	DEFINES		+= HAVE_RTLSDR
-	INCLUDEPATH	+= ./devices/rtlsdr-handler
-	HEADERS		+= ./devices/rtlsdr-handler/rtlsdr-handler.h \
-	                   ./devices/rtlsdr-handler/dongleselect.h
-	SOURCES		+= ./devices/rtlsdr-handler/rtlsdr-handler.cpp \
-	                   ./devices/rtlsdr-handler/dongleselect.cpp
-	FORMS		+= ./devices/rtlsdr-handler/dabstick-widget.ui
-}
 #
 #	the SDRplay
 #
@@ -146,50 +132,6 @@ sdrplay-v3 {
         FORMS           += ./devices/sdrplay-handler-v3/sdrplay-widget-v3.ui
 }
 #
-pluto   {
-        DEFINES         += HAVE_PLUTO
-        QT              += network
-        INCLUDEPATH     += ./devices/pluto-handler
-        HEADERS         += ./devices/pluto-handler/pluto-handler.h
-        SOURCES         += ./devices/pluto-handler/pluto-handler.cpp
-        FORMS           += ./devices/pluto-handler/pluto-widget.ui
-        LIBS            += -liio -lad9361
-}
-
-#
-airspy {
-	DEFINES		+= HAVE_AIRSPY
-	INCLUDEPATH	+= ./devices/airspy-handler \
-	                   ./devices/airspy-handler/libairspy
-	HEADERS		+= ./devices/airspy-handler/airspy-handler.h 
-	SOURCES		+= ./devices/airspy-handler/airspy-handler.cpp 
-	FORMS		+= ./devices/airspy-handler/airspy-widget.ui
-}
-#
-#	extio dependencies, windows only
-#
-extio {
-	DEFINES		+= HAVE_EXTIO
-	INCLUDEPATH	+= ./devices/extio-handler
-	HEADERS		+= ./devices/extio-handler/extio-handler.h \
-	                   ./devices/extio-handler/common-readers.h \
-	                   ./devices/extio-handler/virtual-reader.h \
-	                   ./devices/extio-handler/card-reader.h
-	SOURCES		+= ./devices/extio-handler/extio-handler.cpp \
-	                   ./devices/extio-handler/common-readers.cpp \
-	                   ./devices/extio-handler/virtual-reader.cpp \
-	                   ./devices/extio-handler/card-reader.cpp
-	FORMS		+= ./devices/extio-handler/extio-widget.ui
-}
-
-rtl_tcp {
-	DEFINES		+= HAVE_RTL_TCP
-	QT		+= network
-	INCLUDEPATH	+= ./devices/rtl_tcp
-	HEADERS		+= ./devices/rtl_tcp/rtl_tcp_client.h
-	SOURCES		+= ./devices/rtl_tcp/rtl_tcp_client.cpp
-	FORMS		+= ./devices/rtl_tcp/rtl_tcp-widget.ui
-}
 
 elad-s1 {
 	DEFINES		+= HAVE_ELAD_S1

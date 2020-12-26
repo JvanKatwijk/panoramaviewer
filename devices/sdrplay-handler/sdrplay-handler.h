@@ -107,6 +107,7 @@ public:
 	int32_t	getRate			();
 	RingBuffer<std::complex<float>>	_I_Buffer;
 	int		denominator;
+	std::atomic<bool>		freqChanging;
 private:
 	QFrame		myFrame;
 	pfn_mir_sdr_StreamInit	my_mir_sdr_StreamInit;

@@ -322,6 +322,12 @@ static int teller	= 0;
 	if (!p -> receiverRuns. load ())
 	   return;
 
+	if (params -> rfChanged != 0) {
+	   p -> freqChanging. store (false);
+	}
+	if (p -> freqChanging. load ())
+	   return;
+
 	for (int i = 0; i <  (int)numSamples; i ++) {
 	   std::complex<int16_t> symb = std::complex<int16_t> (xi [i], xq [i]);
 	   localBuf [i] = symb;
@@ -383,7 +389,7 @@ uint32_t                ndev;
 
         threadRuns. store (false);
 	receiverRuns. store (false);
-
+	freqChanging. store (false);
 	chosenDevice		= nullptr;
 	deviceParams		= nullptr;
 
@@ -583,6 +589,7 @@ uint32_t                ndev;
 	                                   chosenDevice -> tuner,
 	                                   sdrplay_api_Update_Tuner_Frf,
 	                                   sdrplay_api_Update_Ext1_None);
+	         freqChanging. store (true);
                  if (err != sdrplay_api_Success) {
                     fprintf (stderr, "restart: error %s\n",
                                       sdrplay_api_GetErrorString (err));

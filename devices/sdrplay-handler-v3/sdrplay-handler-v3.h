@@ -70,6 +70,7 @@ public:
 	RingBuffer<std::complex<int16_t>>	_I_Buffer;
         std::atomic<bool>	receiverRuns;
 	int		theGain;
+	std::atomic<bool>	freqChanging;
 private:
 	QFrame				myFrame;
 	sdrplay_api_Open_t              sdrplay_api_Open;

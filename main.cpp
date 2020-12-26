@@ -93,10 +93,7 @@ int	opt;
 	QGuiApplication::setAttribute (Qt::AA_EnableHighDpiScaling);
 #endif
 	QApplication a (argc, argv);
-	myRadioInterface = new panoramaViewer (ISettings,
-	                                       MHz (minFreq),
-	                                       MHz (maxFreq));
-
+	myRadioInterface = new panoramaViewer (ISettings);
 	myRadioInterface -> show ();
 	a. exec ();
 /*

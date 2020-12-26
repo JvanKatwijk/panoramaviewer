@@ -1,5 +1,4 @@
 
-
 ---------------------------------------------------------------------
 A simple panorama viewer
 ---------------------------------------------------------------------
@@ -25,11 +24,39 @@ arbitrary wide segment of the spectrum - provided the frequencies are
 supported by the input device.
 
 
+--------------------------------------------------------------------------
+How to use panoramaViewer
+--------------------------------------------------------------------------
+
+The - very few - controls for the panoramaViewer are located
+at the left side of the widget.
+
+ * a device can be selected. The panoramaViewer supports the SDRplay devices.
+A selection can be made for the support library, either 2.13 or 3.07.
+One a device is selected, selection will be fixed for the duration of the
+program execution.
+
+ * a minimum and a maximum frequency for the scan can be set. Of course,
+it is assumed that the maximum is larger than the mimumum.
+Specification is in MHz.
+
+ * the program can be started with the (re)start button. As the name
+suggests, the button can be used to restart the program as well.
+A restart is useful when changing the parameters. Note that changing 
+the setting of the minimum or the maximum frequency has no
+effect on the current run of the program. It will have effect after a
+restart.
+
+ * Touching a location in the specturm window with the mouse and clicking
+with the right mouse button will cause the frequency to be shown on
+the top of the left part of the widget.
+
+
 ---------------------------------------------------------------------------
 Windows
 -----------------------------------------------------------------------------
 
-At some point in time an installer for Windows will be created
+A windows installer is available
 
 --------------------------------------------------------------------------------
 Linux
