@@ -187,6 +187,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	connect (pauseButton, SIGNAL (clicked ()),
 	         this, SLOT (handle_pauseButton ()));
 	this	-> fftFreq	= theDevice -> get_fftWidth ();
+	fprintf (stderr, "fftWidth = %d\n", fftFreq);
 	theScope		= nullptr;
 	theProcessor		= nullptr;
 }
