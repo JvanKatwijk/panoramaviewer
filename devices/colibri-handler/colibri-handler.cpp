@@ -145,6 +145,8 @@ bool	colibriHandler::restartReader	() {
 	if (running. load())
 	   return true;		// should not happen
 
+	fprintf (stderr, "restart colibri with rate parameter %d (%d)\n",
+	                                indexforRate (inputRate), inputRate);
 	colibri_start (m_deskriptor,
 	               indexforRate (inputRate),
                        the_callBackRx,
@@ -175,7 +177,7 @@ int32_t	colibriHandler::Samples () {
 }
 
 int32_t	colibriHandler::getRate	() {
-	return sampleRate (5);
+	return 3072000;
 }
 
 void	colibriHandler::resetBuffer () {

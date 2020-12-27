@@ -162,7 +162,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	}
 	else 	// cannot happen
 #endif
-#ifdef	HAVE_COLIBRI
+#ifdef	HAVE_RTLSDR
 	if (s == "rtlsdr") {
 	   try {
 	      theDevice	= new rtlsdrHandler (spectrumSettings);
