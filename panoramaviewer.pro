@@ -7,11 +7,11 @@
 TEMPLATE	= app
 TARGET		= panoramaViewer
 QT		+= widgets
-QMAKE_CFLAGS    +=  -O3 -ffast-math
-QMAKE_CXXFLAGS  +=  -O3 -ffast-math
-#QMAKE_CFLAGS   +=  -g
-#QMAKE_CXXFLAGS +=  -g
-#QMAKE_LFLAGS   +=  -g
+#QMAKE_CFLAGS    +=  -O3 -ffast-math
+#QMAKE_CXXFLAGS  +=  -O3 -ffast-math
+QMAKE_CFLAGS   +=  -g
+QMAKE_CXXFLAGS +=  -g
+QMAKE_LFLAGS   +=  -g
 QMAKE_CXXFLAGS += -isystem $$[QT_INSTALL_HEADERS]
 RC_ICONS        =  viewer.ico
 RESOURCES       += resources.qrc
@@ -68,6 +68,7 @@ CONFIG		+= sdrplay
 CONFIG		+= sdrplay-v3
 CONFIG		+= elad-s1
 CONFIG		+= colibri
+CONFIG		+= rtlsdr
 }
 
 ## and for windows32 we use:
@@ -189,4 +190,14 @@ colibri	{
         HEADERS         += ./devices/colibri-handler/colibri-handler.h 
         SOURCES         += ./devices/colibri-handler/colibri-handler.cpp 
         FORMS           += ./devices/colibri-handler/colibri-widget.ui
+}
+
+rtlsdr {
+	DEFINES		+= HAVE_RTLSDR
+	INCLUDEPATH	+= ./devices/rtlsdr-handler
+	HEADERS		+= ./devices/rtlsdr-handler/rtlsdr-handler.h \
+	                   ./devices/rtlsdr-handler/dongleselect.h
+	SOURCES		+= ./devices/rtlsdr-handler/rtlsdr-handler.cpp \
+	                   ./devices/rtlsdr-handler/dongleselect.cpp
+	FORMS		+= ./devices/rtlsdr-handler/dabstick-widget.ui
 }

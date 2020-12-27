@@ -54,7 +54,13 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="deviceSelector"/>
+      <widget class="QComboBox" name="deviceSelector">
+       <item>
+        <property name="text">
+         <string>device selector</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="startButton">

@@ -35,6 +35,9 @@
 #ifdef	HAVE_SDRPLAY_V3
 #include	"sdrplay-handler-v3.h"
 #endif
+#ifdef	HAVE_RTLSDR
+#include	"rtlsdr-handler.h"
+#endif
 #ifdef	HAVE_COLIBRI
 #include	"colibri-handler.h"
 #endif
@@ -87,6 +90,9 @@ int k;
 #ifdef	HAVE_COLIBRI
 	deviceSelector	-> addItem ("colibriNano");
 #endif
+#ifdef	HAVE_RTLSDR
+	deviceSelector	-> addItem ("rtlsdr");
+#endif
 
 	if (deviceSelector	-> count () == 0) {
 	   fprintf (stderr, "please configure at least one device\n");
@@ -97,6 +103,9 @@ int k;
 	         this, SLOT (activateDevice (const QString &)));
 
 	paused. store (false);
+	theProcessor	= nullptr;
+	theDevice	= nullptr;
+	theScope	= nullptr;
 }
 
 	panoramaViewer::~panoramaViewer (void) {
@@ -143,6 +152,18 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	if (s == "colibriNano") {
 	   try {
 	      theDevice	= new colibriHandler (spectrumSettings);
+	   } catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"),
+                                       tr ("Opening  device failed\n"));
+	      return;
+	   }
+	}
+	else 	// cannot happen
+#endif
+#ifdef	HAVE_COLIBRI
+	if (s == "rtlsdr") {
+	   try {
+	      theDevice	= new rtlsdrHandler (spectrumSettings);
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                        tr ("Opening  device failed\n"));
@@ -203,14 +224,18 @@ void	panoramaViewer::handle_startButton () {
 }
 
 void	panoramaViewer::TerminateProcess () {
-//	theDevice	-> stopReader ();
-	theProcessor	-> stop ();
+	if (theProcessor != nullptr) {
+	   theProcessor	-> stop ();
+	}
 	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
 	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
 	spectrumSettings	-> sync ();
-	delete		theProcessor;
-	delete		theScope;
-	delete		theDevice;
+	if (theProcessor != nullptr)
+	   delete		theProcessor;
+	if (theScope != nullptr)
+	   delete		theScope;
+	if (theDevice != nullptr)
+	   delete		theDevice;
 	fprintf (stderr, "End of termination procedure");
 }
 

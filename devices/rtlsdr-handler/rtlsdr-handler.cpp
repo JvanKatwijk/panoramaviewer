@@ -1,28 +1,24 @@
 #
 /*
- *    Copyright (C) 2010, 2011, 2012, 2013
+ *    Copyright (C) 2020
  *    Jan van Katwijk (J.vanKatwijk@gmail.com)
- *    Lazy Chair Programming
+ *    Lazy Chair Computing
  *
- *    This file is part of the SDR-J.
- *    Many of the ideas as implemented in SDR-J are derived from
- *    other work, made available through the GNU general Public License. 
- *    All copyrights of the original authors are recognized.
+ *    This file is part of the panoramaViewer
  *
- *    SDR-J is free software; you can redistribute it and/or modify
+ *    panoramaViewer is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation; either version 2 of the License, or
  *    (at your option) any later version.
  *
- *    SDR-J is distributed in the hope that it will be useful,
+ *    panoramaViewer is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with SDR-J; if not, write to the Free Software
+ *    along with panoramaViewer; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
  *
  * 	This particular driver is a very simple wrapper around the
  * 	librtlsdr.  In order to keep things simple, we dynamically
@@ -52,13 +48,23 @@ static
 void	RTLSDRCallBack (uint8_t *buf, uint32_t len, void *ctx) {
 rtlsdrHandler	*theStick	= (rtlsdrHandler *)ctx;
 int32_t	tmp;
+static int sampleCount = 0;
 
 	if ((theStick == NULL) || (len != READLEN_DEFAULT))
 	   return;
 
-	tmp = theStick -> _I_Buffer -> putDataIntoBuffer (buf, len);
-	if ((len - tmp) > 0)
-	   theStick	-> sampleCounter += len - tmp;
+	if (theStick -> freqChanging. load ()) {
+	   sampleCount += len / 2;
+	   if (sampleCount < 20000)
+	      return;
+	   else {
+	      sampleCount = 0;
+	      theStick -> freqChanging. store (false);
+	   }
+	   
+	}
+	   
+	tmp = theStick -> _I_Buffer. putDataIntoBuffer (buf, len);
 }
 //
 //	for handling the events in libusb, we need a controlthread
@@ -88,22 +94,20 @@ virtual void	run (void) {
 };
 //
 //	Our wrapper is a simple classs
-	rtlsdrHandler::rtlsdrHandler (QSettings *s) {
+	rtlsdrHandler::rtlsdrHandler (QSettings *s):
+	                               _I_Buffer (2048 * 1024),
+	                               myFrame (nullptr) {
 int16_t	deviceCount;
 int32_t	r;
 int16_t	deviceIndex;
 int16_t	i;
 
-	dabSettings		= s;
-	this	-> myFrame	= new QFrame (NULL);
-	setupUi (this -> myFrame);
-	this	-> myFrame	-> show ();
-	inputRate		=  Khz (rateSelector -> currentText (). toInt ());
+	dabSettings			= s;
+	setupUi (&myFrame);
+	myFrame. show ();
+	inputRate			= 2000000;
 	libraryLoaded			= false;
 	open				= false;
-	_I_Buffer			= NULL;
-	this	-> sampleCounter	= 0;
-	this	-> vfoOffset		= 0;
 	gains				= NULL;
 
 #ifdef	__MINGW32__
@@ -116,7 +120,6 @@ int16_t	i;
 
 	if (Handle == NULL) {
 	   fprintf (stderr, "failed to open %s\n", libraryString);
-	   delete myFrame;
 	   throw (21);
 	}
 
@@ -127,7 +130,6 @@ int16_t	i;
 #else
 	   dlclose (Handle);
 #endif
-	   delete myFrame;
 	   throw (22);
 	}
 
@@ -142,7 +144,6 @@ int16_t	i;
 #else
 	   dlclose (Handle);
 #endif
-	   delete myFrame;
 	   throw (23);
 	}
 
@@ -167,7 +168,6 @@ int16_t	i;
 #else
 	   dlclose (Handle);
 #endif
-	   delete myFrame;
 	   throw (24);
 	}
 
@@ -197,30 +197,23 @@ int16_t	i;
 	rtlsdr_set_tuner_gain_mode (device, 0);
 	rtlsdr_set_tuner_gain (device, gains [gainsCount / 2]);
 
-	_I_Buffer		= new RingBuffer<uint8_t>(2048 * 1024);
-	fprintf (stderr, "size = %d\n", _I_Buffer -> GetRingBufferWriteAvailable ());
 	workerHandle		= NULL;
 	connect (gainSlider, SIGNAL (valueChanged (int)),
-	         this, SLOT (set_gainSlider (int)));
+	         this, SLOT (handle_gainSlider (int)));
 	connect (agcChecker, SIGNAL (stateChanged (int)),
-	         this, SLOT (set_Agc (int)));
-	connect (f_correction, SIGNAL (valueChanged (int)),
-	         this, SLOT (freqCorrection  (int)));
-	connect (rateSelector, SIGNAL (activated (const QString &)),
-	         this, SLOT (set_rateSelector (const QString &)));
+	         this, SLOT (handle_Agc (int)));
 	dabSettings	-> beginGroup ("dabstick");
 	gainSlider -> setValue (dabSettings -> value ("gainSlider", 10). toInt ());
 	f_correction -> setValue (dabSettings -> value ("f_correction", 0). toInt ());
 	KhzOffset	-> setValue (dabSettings -> value ("KhzOffset", 0). toInt ());
 	dabSettings	-> endGroup ();
-	(void)(this -> rtlsdr_set_center_freq (device, defaultFrequency ()));
+	freqChanging. store (false);
+	(void)(this -> rtlsdr_set_center_freq (device, 200000000));
 }
 
 	rtlsdrHandler::~rtlsdrHandler	(void) {
 	if (open)
 	   this -> rtlsdr_close (device);
-	if (_I_Buffer != NULL)
-	   delete _I_Buffer;
 	if (gains != NULL)
 	   delete[] gains;
 
@@ -229,41 +222,26 @@ int16_t	i;
 	dabSettings	-> setValue ("f_correction", f_correction -> value ());
 	dabSettings	-> setValue ("KhzOffset", KhzOffset -> value ());
 	dabSettings	-> endGroup ();
-	delete myFrame;
 	open = false;
 }
 
-void	rtlsdrHandler::setVFOFrequency	(uint64_t f) {
-	(void)(this -> rtlsdr_set_center_freq (device, (uint32_t)f + vfoOffset));
-}
-
-uint64_t rtlsdrHandler::getVFOFrequency	(void) {
-	return (uint64_t)(this -> rtlsdr_get_center_freq (device)) - vfoOffset;
-}
-
-bool	rtlsdrHandler::legalFrequency (uint64_t f) {
-	return  Mhz (1) <= f && f <= Mhz (1800);
-}
-
-uint64_t rtlsdrHandler::defaultFrequency	(void) {
-	return Khz (94700);
+void	rtlsdrHandler::setVFOFrequency	(int32_t f) {
+	(void)(this -> rtlsdr_set_center_freq (device, f));
+	freqChanging. store (true);
 }
 //
-//
-bool	rtlsdrHandler::restartReader	(void) {
+bool	rtlsdrHandler::restartReader	(int32_t freq) {
 int32_t	r;
 
 	if (workerHandle != NULL)
 	   return true;
 
-	_I_Buffer	-> FlushRingBuffer ();
+	_I_Buffer. FlushRingBuffer ();
 	r = this -> rtlsdr_reset_buffer (device);
 	if (r < 0)
 	   return false;
 
-	this -> rtlsdr_set_center_freq (device, 
-	                   (int32_t)(this -> rtlsdr_get_center_freq (device)) +
-	                                 vfoOffset);
+	(void)(this -> rtlsdr_set_center_freq (device, freq));
 	workerHandle	= new dll_driver (this);
 	return true;
 }
@@ -283,41 +261,8 @@ void	rtlsdrHandler::stopReader	(void) {
 	workerHandle	= NULL;
 }
 //
-//	Note that this function is neither used for the
-//	dabreceiver nor for the fmreceiver
-//
-int32_t	rtlsdrHandler::setRate	(int32_t newRate) {
-int32_t	r;
 
-	if (newRate < 900000) return inputRate;
-	if (newRate > 3200000) return inputRate;
-
-	if (workerHandle == NULL) {
-	   r	= this -> rtlsdr_set_sample_rate (device, newRate);
-	   if (r < 0) {
-	      this -> rtlsdr_set_sample_rate (device, inputRate);
-	   }
-
-	   r	= this -> rtlsdr_get_sample_rate (device);
-	}
-	else {	
-//	we stop the transmission first
-	   stopReader ();
-	   r	= this -> rtlsdr_set_sample_rate (device, newRate);
-	   if (r < 0) {
-	      this -> rtlsdr_set_sample_rate (device, inputRate);
-	   }
-	   r	= this -> rtlsdr_get_sample_rate (device);
-	fprintf (stderr, "samplerate = %d\n", r);
-//	ok all set, continue
-	   restartReader (); 	// we need a proper restart from the user
-	}
-
-	inputRate	= newRate;
-	return r;
-}
-
-void	rtlsdrHandler::set_gainSlider (int gain) {
+void	rtlsdrHandler::handle_gainSlider (int gain) {
 static int	oldGain	= 0;
 
 	if (gain == oldGain)
@@ -332,7 +277,7 @@ static int	oldGain	= 0;
 }
 
 
-void	rtlsdrHandler::set_Agc	(int state) {
+void	rtlsdrHandler::handle_Agc	(int state) {
 	if (agcChecker -> isChecked ())
 	   (void)rtlsdr_set_agc_mode (device, 1);
 	else
@@ -340,51 +285,25 @@ void	rtlsdrHandler::set_Agc	(int state) {
 }
 
 //
-//	correction is in Hz
-void	rtlsdrHandler::freqCorrection	(int32_t ppm) {
-	this -> rtlsdr_set_freq_correction (device, ppm);
-}
-
-//
 //	The brave old getSamples. For the dab stick, we get
 //	size: still in I/Q pairs, but we have to convert the data from
 //	uint8_t to DSPCOMPLEX *
-int32_t	rtlsdrHandler::getSamples (DSPCOMPLEX *V, int32_t size) { 
+int32_t	rtlsdrHandler::getSamples (std::complex<float> *V, int32_t size) { 
 int32_t	amount, i;
 uint8_t	*tempBuffer = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
 //
-	amount = _I_Buffer	-> getDataFromBuffer (tempBuffer, 2 * size);
+	amount = _I_Buffer. getDataFromBuffer (tempBuffer, 2 * size);
 	for (i = 0; i < amount / 2; i ++)
-	    V [i] = DSPCOMPLEX ((float (tempBuffer [2 * i] - 127)) / 128.0,
-	                        (float (tempBuffer [2 * i + 1] - 127)) / 128.0);
-	return amount / 2;
-}
-
-//	and especially for our beloved spectrum viewer we provide
-int32_t	rtlsdrHandler::getSamples 	(DSPCOMPLEX  *V,
-	                         int32_t size, int32_t segmentSize) {
-int32_t	amount, i;
-uint8_t	*tempBuffer = (uint8_t *)alloca (2 * size * sizeof (uint8_t));
-//
-	amount = _I_Buffer	-> getDataFromBuffer (tempBuffer, 2 * size);
-	for (i = 0; i < amount / 2; i ++)
-	    V [i] = DSPCOMPLEX ((float (tempBuffer [2 * i] - 128)) / 128.0,
-	                        (float (tempBuffer [2 * i + 1] - 128)) / 128.0);
-
-	_I_Buffer	-> skipDataInBuffer (2 * (segmentSize - size));
-
+	    V [i] = std::complex<float> (
+	                 (float (tempBuffer [2 * i] - 127)) / 128.0,
+	                 (float (tempBuffer [2 * i + 1] - 127)) / 128.0);
 	return amount / 2;
 }
 
 int32_t	rtlsdrHandler::Samples	(void) {
-	return _I_Buffer	-> GetRingBufferReadAvailable () / 2;
+	return _I_Buffer. GetRingBufferReadAvailable () / 2;
 }
 //
-//	vfoOffset is in Hz, we have two spinboxes influencing the
-//	settings
-void	rtlsdrHandler::setKhzOffset	(int k) {
-	vfoOffset	= Khz (k);
-}
 
 bool	rtlsdrHandler::load_rtlFunctions (void) {
 //
@@ -523,14 +442,11 @@ int16_t	rtlsdrHandler::bitDepth	(void) {
 	return 8;
 }
 
-int32_t	rtlsdrHandler::getRate	(void) {
+int32_t	rtlsdrHandler::get_fftWidth	() {
 	return inputRate;
 }
 
-void	rtlsdrHandler::set_rateSelector (const QString &s) {
-int32_t v	= s. toInt ();
-
-	setRate		(Khz (v));
-	set_changeRate	(Khz (v));		// and signal the main program
+void	rtlsdrHandler::resetBuffer	() {
+	_I_Buffer. FlushRingBuffer ();
 }
 
