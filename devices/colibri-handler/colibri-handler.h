@@ -89,7 +89,7 @@ public:
 	int32_t		Samples			(void);
 	void		resetBuffer		(void);
 	int16_t		bitDepth		(void);
-	int32_t		getRate			(void);
+	int32_t		fft_Width		(void);
 	RingBuffer<std::complex<float>>	_I_Buffer;
 
 private:

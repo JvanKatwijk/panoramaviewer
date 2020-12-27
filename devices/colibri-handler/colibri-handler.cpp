@@ -176,8 +176,8 @@ int32_t	colibriHandler::Samples () {
 	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
-int32_t	colibriHandler::getRate	() {
-	return 3072000;
+int32_t	colibriHandler::fft_Width	() {
+	return inputRate;
 }
 
 void	colibriHandler::resetBuffer () {
@@ -185,7 +185,7 @@ void	colibriHandler::resetBuffer () {
 }
 
 int16_t	colibriHandler::bitDepth () {
-	return 12;
+	return 14;
 }
 
 bool	colibriHandler::legalFrequency	(uint64_t f) {

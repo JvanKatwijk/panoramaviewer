@@ -43,14 +43,14 @@ Q_OBJECT
 public:
 		eladHandler		(QSettings *);
 		~eladHandler		(void);
-	void	setVFOFrequency		(uint64_t);
-	uint64_t	getVFOFrequency		(void);
+	void	setVFOFrequency		(int32_t);
+	int32_t	getVFOFrequency		(void);
 	bool	restartReader		(void);
 	void	stopReader		(void);
 	int32_t	getSamples		(std::complex<float> *, int32_t);
 	int32_t	getSamples		(std::complex<float> *, int32_t, int32_t);
 	int32_t	Samples			();
-	int32_t	getRate			();
+	int32_t	fft_Width		();
 	int16_t	bitDepth		();
 	bool	legalFrequency		(int32_t);
 private	slots:

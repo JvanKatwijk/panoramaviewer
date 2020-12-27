@@ -134,15 +134,15 @@ int16_t	theSuccess;
 	   delete theWorker;
 }
 
-int32_t	eladHandler::getRate	(void) {
+int32_t	eladHandler::fft_Width	(void) {
 	return inputRate;
 }
 
-void	eladHandler::setVFOFrequency	(uint64_t newFrequency) {
-int32_t	realFreq = newFrequency - vfoOffset;
+void	eladHandler::setVFOFrequency	(int32_t newFrequency) {
+int32_t	realFreq = newFrequency;
 
 	if (theWorker == NULL) {
-	   vfoFrequency = newFrequency - vfoOffset;
+	   vfoFrequency = newFrequency;
 	   return;
 	}
 
@@ -150,8 +150,8 @@ int32_t	realFreq = newFrequency - vfoOffset;
 	vfoFrequency = theWorker -> getVFOFrequency ();
 }
 
-uint64_t	eladHandler::getVFOFrequency	(void) {
-	return vfoFrequency + vfoOffset;
+int32_t	eladHandler::getVFOFrequency	(void) {
+	return vfoFrequency;
 }
 
 bool	eladHandler::restartReader	(void) {
