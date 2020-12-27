@@ -45,7 +45,7 @@ public:
 		~eladHandler		(void);
 	void	setVFOFrequency		(int32_t);
 	int32_t	getVFOFrequency		(void);
-	bool	restartReader		(void);
+	bool	restartReader		(int32_t);
 	void	stopReader		(void);
 	int32_t	getSamples		(std::complex<float> *, int32_t);
 	int32_t	getSamples		(std::complex<float> *, int32_t, int32_t);

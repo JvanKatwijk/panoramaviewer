@@ -154,8 +154,10 @@ int32_t	eladHandler::getVFOFrequency	(void) {
 	return vfoFrequency;
 }
 
-bool	eladHandler::restartReader	(void) {
+bool	eladHandler::restartReader	(int32_t freq) {
 bool	success;
+
+	this	-> vfoFrequency = freq;
 
 	if ((theWorker != NULL) || !deviceOK)
 	   return true;

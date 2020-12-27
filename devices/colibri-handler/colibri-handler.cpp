@@ -141,10 +141,11 @@ colibriHandler *p = static_cast<colibriHandler *>(ctx);
 	return true;
 }
 
-bool	colibriHandler::restartReader	() {
+bool	colibriHandler::restartReader	(int32_t freq) {
 	if (running. load())
 	   return true;		// should not happen
 
+        colibri_setFrequency (m_deskriptor, freq);
 	fprintf (stderr, "restart colibri with rate parameter %d (%d)\n",
 	                                indexforRate (inputRate), inputRate);
 	colibri_start (m_deskriptor,
