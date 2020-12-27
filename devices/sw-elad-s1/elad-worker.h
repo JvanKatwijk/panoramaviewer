@@ -30,6 +30,7 @@
 #include	<string.h>
 #include	<unistd.h>
 #include	<stdint.h>
+#include	<atomic>
 #include	<QThread>
 #include	"ringbuffer.h"
 #include	"elad-loader.h"
@@ -44,19 +45,20 @@ public:
 	                                 RingBuffer<uint8_t> *,
 	                                 int16_t,	// iqSize
 	                                 bool *);
-			~eladWorker	(void);
-	void		setVFOFrequency	(uint64_t);
-	uint64_t	getVFOFrequency	(void);
-	void		stop		(void);
+			~eladWorker	();
+	void		setVFOFrequency	(int32_t);
+	uint64_t	getVFOFrequency	();
+	void		stop		();
 private:
+	RingBuffer<uint8_t>	*_I_Buffer;
 	void			run	(void);
 	eladLoader		*functions;	// 
-	RingBuffer<uint8_t>	*_I_Buffer;
 	int16_t			iqSize;
 	int32_t			defaultFreq;
 	long int		lastFrequency;
 	bool			runnable;
 	int32_t			theRate;
+	std::atomic<bool>	freqChanging;
 signals:
 	void			samplesAvailable	(int);
 };

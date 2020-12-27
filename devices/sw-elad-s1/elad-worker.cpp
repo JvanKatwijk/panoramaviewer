@@ -78,6 +78,7 @@ uint8_t buffer [BUFFER_SIZE];
 
 void	eladWorker:: run (void) {
 int32_t	amount;
+int32_t	total	= 0;
 int	rc;
 //
 //	we build in a delay such that it can be expected that the
@@ -85,6 +86,8 @@ int	rc;
 //	per read we have BUFFERSIZE / 8 samples, so we wait
 
 	fprintf (stderr, "New elad-worker\n");
+	freqChanging. store (false);
+
 	while (runnable) {
 	   rc = libusb_bulk_transfer (functions -> getHandle (),
 	                              (6 | LIBUSB_ENDPOINT_IN),
@@ -101,7 +104,15 @@ int	rc;
 	         break;
 	   }
 
-	   _I_Buffer	-> putDataIntoBuffer (buffer, amount);
+	   if (freqChanging. load ()) {
+	      total += amount;
+	      if (amount > theRate / 4) {
+	         amount = 0;
+	         freqChanging. store (false);
+	      }
+	   }
+	   else
+	      _I_Buffer	-> putDataIntoBuffer (buffer, amount);
 	   usleep (20);
 	   if (_I_Buffer -> GetRingBufferReadAvailable () > theRate / (10 * iqSize))
 	      emit samplesAvailable (theRate / (10 * iqSize));
@@ -109,12 +120,12 @@ int	rc;
 	fprintf (stderr, "eladWorker now stopped\n");
 }
 
-void	eladWorker::setVFOFrequency	(uint64_t f) {
+void	eladWorker::setVFOFrequency	(int32_t f) {
 	if (!runnable)
 	   return;
-//	fprintf (stderr, "Setting freq to %d\n", f);
-	lastFrequency	= (long int)f;
+	lastFrequency	= f;
 	functions	-> SetHWLO (functions -> getHandle (), &lastFrequency);
+	freqChanging. store (true);
 }
 
 uint64_t	eladWorker::getVFOFrequency	(void) {

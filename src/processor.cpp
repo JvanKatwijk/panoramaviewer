@@ -106,8 +106,6 @@ double displayVector	[displaySize];
 	      theDevice	-> resetBuffer ();
 	      while (theDevice -> Samples () < 2 * fftSize)
 	         usleep (1000);
-	      fprintf (stderr, "we have %d samples available\n", 
-	                        theDevice -> Samples ());
 	      theDevice	-> getSamples (Buffer, fftSize); // one to ignore
 	      theDevice	-> getSamples (Buffer, fftSize);
 	      process_segment (i, Buffer, displayVector);

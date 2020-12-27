@@ -146,6 +146,7 @@ static int cnt	= 0;
 	      p -> freqChanging. store (false);
 	      cnt = 0;
 	   }
+	   p -> _I_Buffer. FlushRingBuffer();
 	   return true;
 	}
 	p -> _I_Buffer. putDataIntoBuffer (buffer, len);

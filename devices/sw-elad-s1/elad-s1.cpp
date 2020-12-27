@@ -112,14 +112,13 @@ int16_t	theSuccess;
 	filterText	-> setText ("no filter");
 	gainReduced	= 0;
 	gainLabel	-> setText ("0");
-	connect (hzOffset, SIGNAL (valueChanged (int)),
-	         this, SLOT (setOffset (int)));
 	connect (gainReduction, SIGNAL (clicked (void)),
 	         this, SLOT (setGainReduction (void)));
 	connect (filter, SIGNAL (clicked (void)),
 	         this, SLOT (setFilter (void)));
 	connect (dumpButton, SIGNAL (clicked (void)),
 	         this, SLOT (handle_dumpButton ()));
+	rateDisplay	-> display (inputRate);
 }
 
 	eladHandler::~eladHandler	(void) {
@@ -139,19 +138,14 @@ int32_t	eladHandler::get_fftWidth	(void) {
 }
 
 void	eladHandler::setVFOFrequency	(int32_t newFrequency) {
-int32_t	realFreq = newFrequency;
 
 	if (theWorker == NULL) {
 	   vfoFrequency = newFrequency;
 	   return;
 	}
 
-	theWorker -> setVFOFrequency (realFreq);
+	theWorker -> setVFOFrequency (newFrequency);
 	vfoFrequency = theWorker -> getVFOFrequency ();
-}
-
-int32_t	eladHandler::getVFOFrequency	(void) {
-	return vfoFrequency;
 }
 
 bool	eladHandler::restartReader	(int32_t freq) {
@@ -186,10 +180,6 @@ void	eladHandler::stopReader	(void) {
 	   usleep (100);
 	delete theWorker;
 	theWorker = NULL;
-}
-
-bool	eladHandler::legalFrequency	(int32_t f) {
-	return f > Khz (100) && f < Khz (100000);
 }
 
 //
@@ -297,21 +287,6 @@ uint8_t		buf [iqSize * size];
 	return amount / iqSize;
 }
 
-int32_t	eladHandler::getSamples (std::complex<float> *V,
-	                         int32_t size, int32_t segmentSize) { 
-int32_t	skipAmount = segmentSize - size;	// this is in IQ samples
-int32_t	amount;
-
-	if (!deviceOK) 
-	   return 0;
-
-	amount	= getSamples (V, size);
-//	so, we skip iqSize buffer elements
-	if (skipAmount > 0)
-	   _I_Buffer.  skipDataInBuffer (iqSize * skipAmount);
-	return amount;
-}
-
 int32_t	eladHandler::Samples	(void) {
 	if (!deviceOK)
 	   return 0;
@@ -326,9 +301,8 @@ int16_t	eladHandler::bitDepth	(void) {
 	return depth;
 }
 
-//
-void	eladHandler::setOffset	(int k) {
-	vfoOffset	= k;
+void	eladHandler::resetBuffer	() {
+	_I_Buffer. FlushRingBuffer ();
 }
 
 void	eladHandler::setGainReduction	(void) {

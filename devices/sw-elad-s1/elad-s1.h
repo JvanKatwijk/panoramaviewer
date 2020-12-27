@@ -43,19 +43,16 @@ Q_OBJECT
 public:
 		eladHandler		(QSettings *);
 		~eladHandler		(void);
+	int32_t	get_fftWidth		();
 	void	setVFOFrequency		(int32_t);
-	int32_t	getVFOFrequency		(void);
 	bool	restartReader		(int32_t);
 	void	stopReader		(void);
 	int32_t	getSamples		(std::complex<float> *, int32_t);
-	int32_t	getSamples		(std::complex<float> *, int32_t, int32_t);
 	int32_t	Samples			();
-	int32_t	get_fftWidth		();
 	int16_t	bitDepth		();
-	bool	legalFrequency		(int32_t);
+	void	resetBuffer		();
 private	slots:
 	void	setGainReduction	(void);
-	void	setOffset		(int);
 	void	setFilter		();
 	void	handle_dumpButton	();
 private:
