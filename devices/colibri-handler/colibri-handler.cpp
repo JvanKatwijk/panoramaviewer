@@ -101,7 +101,7 @@
 	         this, SLOT (set_gainControl (int)));
 
 	running. store (false);
-	inputRate	= 3072000;
+	inputRate	= 2560000;
 }
 
 	colibriHandler::~colibriHandler () {
