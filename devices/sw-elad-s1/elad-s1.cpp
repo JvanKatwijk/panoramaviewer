@@ -51,7 +51,7 @@ std::complex<float>	makeSample_15bits (uint8_t *);
 	                                      _I_Buffer (2048 * 2048) {
 int16_t	theSuccess;
 	this	-> eladSettings	= s;
-	this	-> inputRate	= 3072000;
+	this	-> inputRate	= 2560000;
 	deviceOK		= false;
 	setupUi (&myFrame);
 	myFrame. show ();

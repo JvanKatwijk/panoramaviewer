@@ -140,6 +140,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	if (s == "elad-S1") {
 	   try {
 	      theDevice	= new eladHandler (spectrumSettings);
+	      fprintf (stderr, "elad device started\n");
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                        tr ("Opening  device failed\n"));
@@ -152,6 +153,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	if (s == "colibriNano") {
 	   try {
 	      theDevice	= new colibriHandler (spectrumSettings);
+	      fprintf (stderr, "colibri device started\n");
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                        tr ("Opening  device failed\n"));

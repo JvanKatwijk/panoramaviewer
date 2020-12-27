@@ -116,6 +116,7 @@
 
 void	colibriHandler::setVFOFrequency	(uint64_t newFrequency) {
         colibri_setFrequency (m_deskriptor, newFrequency);
+	fprintf (stderr, "setting colibri freq to %d\n", newFrequency);
 	this	-> lastFrequency	= newFrequency;
 }
 

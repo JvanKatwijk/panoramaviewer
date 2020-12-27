@@ -89,8 +89,10 @@ void	Processor::run		() {
 std::complex<float>Buffer [fftSize];
 double displayVector	[displaySize];
 	running. store (true);
-	theDevice -> restartReader (freq (0));
-
+	fprintf (stderr, "we are starting\n");
+	bool b = theDevice -> restartReader (freq (0));
+	fprintf (stderr, "we started at frequency %d with %s\n",
+	                         freq (0), b ? "success" : "failure");
 	while (running. load ()) {
 	   for (int i = 0; i < nrSegments; i ++) {
 	      if (!running. load ())
@@ -99,10 +101,13 @@ double displayVector	[displaySize];
 	         usleep (1000000);
 	         continue;
 	      }
+	      fprintf (stderr, "now ready for next segment at %d\n", freq (i));
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
 	      while (theDevice -> Samples () < 2 * fftSize)
 	         usleep (1000);
+	      fprintf (stderr, "we have %d samples available\n", 
+	                        theDevice -> Samples ());
 	      theDevice	-> getSamples (Buffer, fftSize); // one to ignore
 	      theDevice	-> getSamples (Buffer, fftSize);
 	      process_segment (i, Buffer, displayVector);

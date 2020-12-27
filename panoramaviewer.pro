@@ -68,7 +68,7 @@ CONFIG		+= sdrplay
 CONFIG		+= sdrplay-v3
 CONFIG		+= elad-s1
 CONFIG		+= colibri
-CONFIG		+= rtlsdr
+#CONFIG		+= rtlsdr
 }
 
 ## and for windows32 we use:
