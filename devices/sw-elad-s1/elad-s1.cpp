@@ -134,7 +134,7 @@ int16_t	theSuccess;
 	   delete theWorker;
 }
 
-int32_t	eladHandler::fft_Width	(void) {
+int32_t	eladHandler::get_fftWidth	(void) {
 	return inputRate;
 }
 

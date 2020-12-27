@@ -177,7 +177,7 @@ int32_t	colibriHandler::Samples () {
 	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
-int32_t	colibriHandler::fft_Width	() {
+int32_t	colibriHandler::get_fftWidth	() {
 	return inputRate;
 }
 

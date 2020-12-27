@@ -50,7 +50,7 @@ public:
 	int32_t	getSamples		(std::complex<float> *, int32_t);
 	int32_t	getSamples		(std::complex<float> *, int32_t, int32_t);
 	int32_t	Samples			();
-	int32_t	fft_Width		();
+	int32_t	get_fftWidth		();
 	int16_t	bitDepth		();
 	bool	legalFrequency		(int32_t);
 private	slots:
