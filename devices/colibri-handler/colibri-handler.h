@@ -30,6 +30,7 @@
 #include	<QLabel>
 #include	<QDebug>
 #include	<QFileDialog>
+#include	<atomic>
 #include	"ui_colibri-widget.h"
 #include	"ringbuffer.h"
 #include	"device-handler.h"
@@ -91,7 +92,7 @@ public:
 	int16_t		bitDepth		(void);
 	int32_t		get_fftWidth		(void);
 	RingBuffer<std::complex<float>>	_I_Buffer;
-
+	std::atomic<bool>	freqChanging;
 private:
 	QFrame			myFrame;
 	QSettings		*colibriSettings;

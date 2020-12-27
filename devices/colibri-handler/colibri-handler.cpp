@@ -102,6 +102,7 @@
 
 	running. store (false);
 	inputRate	= 2560000;
+	freqChanging. store (false);
 }
 
 	colibriHandler::~colibriHandler () {
@@ -117,6 +118,7 @@
 void	colibriHandler::setVFOFrequency	(uint64_t newFrequency) {
         colibri_setFrequency (m_deskriptor, newFrequency);
 	fprintf (stderr, "setting colibri freq to %d\n", newFrequency);
+	freqChanging. store (true);
 	this	-> lastFrequency	= newFrequency;
 }
 
@@ -136,7 +138,16 @@ static
 bool	the_callBackRx (std::complex<float> *buffer, uint32_t len,
 	                               bool overload, void *ctx) {
 colibriHandler *p = static_cast<colibriHandler *>(ctx);
+static int cnt	= 0;
 	(void)overload;
+	if (p -> freqChanging. load ()) {
+	   cnt += len;
+	   if (len > 1000000) {
+	      p -> freqChanging. store (false);
+	      cnt = 0;
+	   }
+	   return true;
+	}
 	p -> _I_Buffer. putDataIntoBuffer (buffer, len);
 	return true;
 }
