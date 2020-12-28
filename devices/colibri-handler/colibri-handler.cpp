@@ -136,7 +136,7 @@ static int cnt	= 0;
 
 	if (p -> freqChanging. load ()) {
 	   cnt += len;
-	   if (len > 2560000) {
+	   if (cnt > 2560000) {
 	      p -> freqChanging. store (false);
 	      cnt = 0;
 	   }
