@@ -74,7 +74,7 @@ class	colibriHandler: public deviceHandler, public Ui_colibriWidget {
 Q_OBJECT
 public:
 
-			colibriHandler		(QSettings *);
+			colibriHandler		(QSettings *, int);
 			~colibriHandler		(void);
 	int32_t		get_fftWidth		(void);
 	void		setVFOFrequency		(int32_t);
@@ -86,13 +86,14 @@ public:
 	int16_t		bitDepth		(void);
 	void		resetBuffer		(void);
 	RingBuffer<std::complex<float>>	_I_Buffer;
+	int32_t			inputRate;
 	std::atomic<bool>	freqChanging;
+	int		delayFraction;
 private:
 	QFrame			myFrame;
 	QSettings		*colibriSettings;
 	Descriptor		m_deskriptor;
 	std::atomic<bool>	running;
-	int32_t			inputRate;
 	SampleRateIndex		indexforRate		(int);
 	int			sampleRate		(int);
 	bool			loadFunctions		();

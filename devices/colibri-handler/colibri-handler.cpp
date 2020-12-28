@@ -36,10 +36,12 @@
 #define GETPROCADDRESS  dlsym
 #endif
 
-	colibriHandler::colibriHandler  (QSettings *s):
+	colibriHandler::colibriHandler  (QSettings *s,
+	                                 int	delayFraction):
 	                                  _I_Buffer (4 * 1024 * 1024),
 	                                  myFrame (nullptr) {
 	colibriSettings		= s;
+	this	-> delayFraction	= delayFraction;
 	setupUi (&myFrame);
 
 #ifdef  __MINGW32__
@@ -136,7 +138,7 @@ static int cnt	= 0;
 
 	if (p -> freqChanging. load ()) {
 	   cnt += len;
-	   if (cnt > 2560000) {
+	   if (cnt > p -> delayFraction * (p -> inputRate / 100)) {
 	      p -> freqChanging. store (false);
 	      cnt = 0;
 	   }

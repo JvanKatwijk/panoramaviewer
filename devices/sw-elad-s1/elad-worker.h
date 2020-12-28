@@ -44,6 +44,7 @@ public:
 	                                 eladLoader *,
 	                                 RingBuffer<uint8_t> *,
 	                                 int16_t,	// iqSize
+	                                 int,
 	                                 bool *);
 			~eladWorker	();
 	void		setVFOFrequency	(int32_t);
@@ -59,6 +60,7 @@ private:
 	bool			runnable;
 	int32_t			theRate;
 	std::atomic<bool>	freqChanging;
+	int			delayFraction;
 signals:
 	void			samplesAvailable	(int);
 };

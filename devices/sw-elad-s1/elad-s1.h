@@ -41,7 +41,7 @@ typedef	std::complex<float>(*makeSampleP)(uint8_t *);
 class	eladHandler: public deviceHandler, public Ui_eladWidget {
 Q_OBJECT
 public:
-		eladHandler		(QSettings *);
+		eladHandler		(QSettings *, int);
 		~eladHandler		(void);
 	int32_t	get_fftWidth		();
 	void	setVFOFrequency		(int32_t);
@@ -72,6 +72,7 @@ private:
 	int		localFilter;
 	uint8_t		conversionNumber;
 	int16_t		iqSize;
+	int		delayFraction;
 signals:
 	void		samplesAvailable	(int);
 };

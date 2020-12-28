@@ -58,33 +58,20 @@ int	main (int argc, char **argv) {
 QSettings	*ISettings;		/* input .ini file	*/
 QString	initFileName	= fullPathfor (QString (DEFAULT_INI));
 panoramaViewer	*myRadioInterface;
-int	maxFreq		= 0;
-int	minFreq		= 0;
+int	delayFraction	= 100;
 int	opt;
 	ISettings	= new QSettings (initFileName, QSettings::IniFormat);
 
-	maxFreq		= ISettings -> value ("maxFreq", 200). toInt ();
-	minFreq		= ISettings -> value ("minFreq", 85). toInt ();
-
-	while ((opt = getopt (argc, argv, "M:m:f:")) != -1) {
+	while ((opt = getopt (argc, argv, "M:m:f:d:")) != -1) {
 	   switch (opt) {
-	      case 'm':
-	         minFreq	= atoi (optarg);
-	         break;
-	      case 'M':
-	         maxFreq	= atoi (optarg);
+	      case 'd':
+	         delayFraction	= atoi (optarg);
 	         break;
 	      default:		// cannot happen
 	         break;
 	   }
 	}
 
-	if ((minFreq < 0) || (minFreq >= 1999) ||
-	    (maxFreq < 0) || (maxFreq >= 1999) ||
-	    (minFreq >= maxFreq)) {
-	   fprintf (stderr, "specify minimum and maximum frequency in MHz\n");
-	   exit (21);
-	}
 /*
  *	Before we connect control to the gui, we have to
  *	instantiate
@@ -93,7 +80,7 @@ int	opt;
 	QGuiApplication::setAttribute (Qt::AA_EnableHighDpiScaling);
 #endif
 	QApplication a (argc, argv);
-	myRadioInterface = new panoramaViewer (ISettings);
+	myRadioInterface = new panoramaViewer (ISettings, delayFraction);
 	myRadioInterface -> show ();
 	a. exec ();
 /*

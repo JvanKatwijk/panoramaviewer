@@ -46,11 +46,13 @@ std::complex<float>	makeSample_15bits (uint8_t *);
 
 //	Currently, we do not have lots of settings,
 //	it just might change suddenly, but not today
-		eladHandler::eladHandler (QSettings	*s):
+		eladHandler::eladHandler (QSettings	*s,
+	                                  int		delayFraction):
 	                                      myFrame (nullptr),
 	                                      _I_Buffer (2048 * 2048) {
 int16_t	theSuccess;
 	this	-> eladSettings	= s;
+	this	-> delayFraction	= delayFraction;
 	this	-> inputRate	= 3072000;
 	deviceOK		= false;
 	setupUi (&myFrame);
@@ -162,6 +164,7 @@ bool	success;
 	                                  theLoader,
 	                                  &_I_Buffer,
 	                                  iqSize,
+	                                  delayFraction,
 	                                  &success);
 	connect (theWorker, SIGNAL (samplesAvailable (int)),
 	         this, SIGNAL (samplesAvailable (int)));

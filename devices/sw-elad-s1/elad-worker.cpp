@@ -37,6 +37,7 @@
 	                        eladLoader	*f,
 	                        RingBuffer<uint8_t> *buf,
 	                        int16_t		iqSize,
+	                        int		delayFraction,
 	                        bool	*OK) {
 
 	this	-> theRate	= theRate;
@@ -44,6 +45,7 @@
 	this	-> functions	= f;
 	_I_Buffer		= buf;
 	this	-> iqSize	= iqSize;
+	this	-> delayFraction	= delayFraction;
 	*OK			= false;	// just the default
 
 	if (!functions	-> OK ())
@@ -107,7 +109,7 @@ int	rc;
 	   _I_Buffer	-> putDataIntoBuffer (buffer, amount);
 	   if (freqChanging. load ()) {
 	      total += amount;
-	      if (amount > theRate / 4) {
+	      if (amount >  delayFraction * (theRate / 100)) {
 	         amount = 0;
 	         freqChanging. store (false);
 	      }
