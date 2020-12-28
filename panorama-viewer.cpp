@@ -200,7 +200,12 @@ void	panoramaViewer::handle_startButton () {
 	this	-> minFreq		= MHz (lowEnd  -> value ()); 
 	this	-> maxFreq		= MHz (highEnd -> value ());
 	this	-> segmentCoverage	= overlapFraction * fftFreq;
-	this	-> nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
+	if (minFreq >= maxFreq) {
+	   this -> nrSegments	= 1;
+	   this -> maxFreq	= minFreq + fftFreq;
+	}
+	else
+	   this	-> nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
 	this	-> startFreq		= minFreq + (overlapFraction - 0.5) * fftFreq;
 	this	-> displaySize		= nrSegments * overlapFraction * SEGMENT_SIZE;
 	this	-> maxFreq		= minFreq + nrSegments * segmentCoverage;

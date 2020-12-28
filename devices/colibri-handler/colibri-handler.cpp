@@ -140,16 +140,18 @@ bool	the_callBackRx (std::complex<float> *buffer, uint32_t len,
 colibriHandler *p = static_cast<colibriHandler *>(ctx);
 static int cnt	= 0;
 	(void)overload;
+	p -> _I_Buffer. putDataIntoBuffer (buffer, len);
+
 	if (p -> freqChanging. load ()) {
 	   cnt += len;
-	   if (len > 1000000) {
+	   if (len > 2560000) {
 	      p -> freqChanging. store (false);
 	      cnt = 0;
 	   }
 	   p -> _I_Buffer. FlushRingBuffer();
 	   return true;
 	}
-	p -> _I_Buffer. putDataIntoBuffer (buffer, len);
+
 	return true;
 }
 

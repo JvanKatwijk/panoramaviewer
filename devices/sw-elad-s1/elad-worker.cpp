@@ -104,15 +104,16 @@ int	rc;
 	         break;
 	   }
 
+	   _I_Buffer	-> putDataIntoBuffer (buffer, amount);
 	   if (freqChanging. load ()) {
 	      total += amount;
 	      if (amount > theRate / 4) {
 	         amount = 0;
 	         freqChanging. store (false);
 	      }
+	      _I_Buffer -> FlushRingBuffer ();
+	      return;
 	   }
-	   else
-	      _I_Buffer	-> putDataIntoBuffer (buffer, amount);
 	   usleep (20);
 	   if (_I_Buffer -> GetRingBufferReadAvailable () > theRate / (10 * iqSize))
 	      emit samplesAvailable (theRate / (10 * iqSize));
