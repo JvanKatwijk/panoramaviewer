@@ -86,8 +86,8 @@
         }
 
 	fprintf (stderr, "and opening device 0 was ok\n");
-        colibri_setFrequency (m_deskriptor, defaultFrequency ());
-	this		-> lastFrequency	= defaultFrequency ();
+        colibri_setFrequency (m_deskriptor, 94700000);
+	this		-> lastFrequency	= 94700000;
 	fprintf (stderr, "set on %d\n", (int32_t)lastFrequency);
 	colibriSettings -> beginGroup ("colibriSettings");
 	int gainSetting = colibriSettings -> value ("colibri-gain", 20). toInt ();
@@ -115,23 +115,15 @@
 }
 //
 
-void	colibriHandler::setVFOFrequency	(uint64_t newFrequency) {
+int32_t	colibriHandler::get_fftWidth	() {
+	return inputRate;
+}
+
+void	colibriHandler::setVFOFrequency	(int32_t newFrequency) {
         colibri_setFrequency (m_deskriptor, newFrequency);
 	fprintf (stderr, "setting colibri freq to %d\n", newFrequency);
 	freqChanging. store (true);
 	this	-> lastFrequency	= newFrequency;
-}
-
-uint64_t	colibriHandler::getVFOFrequency () {
-	return this -> lastFrequency;
-}
-
-void	colibriHandler::set_gainControl	(int newGain) {
-float	gainValue	= -31.5 + newGain * 0.5;
-	if (gainValue <= 6) {
-           colibri_setPream (m_deskriptor, gainValue);
-	   actualGain	-> display (gainValue);
-	}
 }
 
 static
@@ -176,13 +168,6 @@ void	colibriHandler::stopReader() {
 	colibri_stop (m_deskriptor);
 }
 
-int32_t	colibriHandler::getSamples (std::complex<float> *V,
-	                            int32_t size, int32_t segmentSize) {
-	int amount = getSamples (V, size);
-	_I_Buffer. skipDataInBuffer (segmentSize - size);
-	return amount;
-}
-
 int32_t	colibriHandler::getSamples (std::complex<float> *V, int32_t size) { 
 	return _I_Buffer. getDataFromBuffer (V, size);
 }
@@ -191,25 +176,12 @@ int32_t	colibriHandler::Samples () {
 	return _I_Buffer. GetRingBufferReadAvailable ();
 }
 
-int32_t	colibriHandler::get_fftWidth	() {
-	return inputRate;
-}
-
-void	colibriHandler::resetBuffer () {
-	_I_Buffer. FlushRingBuffer();
-}
-
 int16_t	colibriHandler::bitDepth () {
 	return 14;
 }
 
-bool	colibriHandler::legalFrequency	(uint64_t f) {
-	(void)f;
-	return true;
-}
-
-uint64_t colibriHandler::defaultFrequency	() {
-	return 94700000;
+void	colibriHandler::resetBuffer () {
+	_I_Buffer. FlushRingBuffer();
 }
 
 int colibriHandler::sampleRate (int index) {
@@ -388,4 +360,12 @@ bool colibriHandler::colibri_setFrequency (Descriptor dev, uint32_t value) {
 	return false;
 }
 
+
+void	colibriHandler::set_gainControl	(int newGain) {
+float	gainValue	= -31.5 + newGain * 0.5;
+	if (gainValue <= 6) {
+           colibri_setPream (m_deskriptor, gainValue);
+	   actualGain	-> display (gainValue);
+	}
+}
 

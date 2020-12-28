@@ -76,21 +76,15 @@ public:
 
 			colibriHandler		(QSettings *);
 			~colibriHandler		(void);
-	void		setVFOFrequency		(uint64_t);
-	uint64_t	getVFOFrequency		(void);
-	bool		legalFrequency		(uint64_t);
-	uint64_t	defaultFrequency	(void);
-
+	int32_t		get_fftWidth		(void);
+	void		setVFOFrequency		(int32_t);
 	bool		restartReader		(int32_t);
 	void		stopReader		(void);
 	int32_t		getSamples		(std::complex<float> *,
 	                                               int32_t);
-	int32_t		getSamples		(std::complex<float> *,
-	                                               int32_t, int32_t);
 	int32_t		Samples			(void);
-	void		resetBuffer		(void);
 	int16_t		bitDepth		(void);
-	int32_t		get_fftWidth		(void);
+	void		resetBuffer		(void);
 	RingBuffer<std::complex<float>>	_I_Buffer;
 	std::atomic<bool>	freqChanging;
 private:
