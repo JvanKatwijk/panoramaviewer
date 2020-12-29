@@ -216,11 +216,13 @@ void	panoramaViewer::handle_startButton () {
 	this	-> startFreq		= minFreq + (overlapFraction - 0.5) * fftFreq;
 	this	-> displaySize		= nrSegments * overlapFraction * SEGMENT_SIZE;
 	this	-> maxFreq		= minFreq + nrSegments * segmentCoverage;
+	
 	theScope	= new Scope (panoramaScope,
 	                             displaySize,
 	                             minFreq,
 	                             this -> maxFreq,
-	                             theDevice -> bitDepth ());
+	                             theDevice -> bitDepth (),
+	                             scaler	-> value ());
 	connect (theScope, SIGNAL (clickedwithRight (int)),
 	         this, SLOT (handle_clickedwithRight (int)));
 	theProcessor	= new Processor (theDevice,

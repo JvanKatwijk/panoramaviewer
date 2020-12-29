@@ -53,7 +53,8 @@ public:
 	                         int,		// DISPLAY_SIZE,
 	                         int,		// Start Frequency
 	                         int,		// MAX_FREQ,
-	                         int		// bitDepth ());
+	                         int,		// bitDepth ()
+	                         int		// scaler
 	                        );
 			~Scope	();
 	void		show	(double *);
@@ -69,6 +70,9 @@ private:
 	QwtPlotCurve	*spectrumCurve;
 	int32_t		normalizer;
 	QwtPlotPicker   *lm_picker;
+	int		baseLine;
+	float		get_db		(float);
+	int		scaler;
 public slots:
 	void		rightMouseClick	(const QPointF &);
 signals:

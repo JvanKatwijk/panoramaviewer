@@ -24,19 +24,31 @@
 #include	"scope.h"
 #include	<QColor>
 
+static inline
+int	shifter (int n) {
+int res	= 1;
+	while (n >= 1) {
+	   res <<= 1;
+	   n --;
+	}
+	return res;
+}
+
 		Scope::Scope   (QwtPlot	*plot,
                                  int	displaySize,	// DISPLAY_SIZE,
 	                         int	startFreq,
                                  int	maxFreq,	// MAX_FREQ,
-                                 int	bitDepth	// bitDepth ());
+                                 int	bitDepth, 	// bitDepth ()
+	                         int	scalerValue
                                 ) {
 
+QString	colorString	= "black";
 	plotgrid		= plot;
 	this	-> displaySize	= displaySize;
-
-QString	colorString	= "black";
+	this	-> baseLine	= shifter (bitDepth);
+	this	-> scaler	= scalerValue;
 bool	brush;
-
+	fprintf (stderr, "scaler %d\n", this -> scaler);
 	displayColor		= QColor ("black");
 	gridColor		= QColor ("white");
 	curveColor		= QColor ("white");
@@ -101,7 +113,9 @@ float mmax	= 0;
                                          X_Values [displaySize - 1]);
         plotgrid        -> enableAxis (QwtPlot::xBottom);
         plotgrid        -> setAxisScale (QwtPlot::yLeft,
-                                         get_db (0),  mmax);
+                                         get_db (0),  scaler == 1 ? mmax :
+	                                              scaler == 2 ? -20 : -40);
+//	                                 get_db (0),  mmax / scaler);
         plotgrid        -> enableAxis (QwtPlot::yLeft);
         spectrumCurve	-> setBaseline  (get_db (0));
 
@@ -114,5 +128,9 @@ float mmax	= 0;
 void	Scope::rightMouseClick (const QPointF&point) {
 	clickedwithRight ((int)(point. x()));
 	fprintf (stderr, "de x as waarde is %d\n", (int)(point. x()));
+}
+
+float	Scope::get_db (float x) {
+	return 20 * log10 ((x + 1) / baseLine);
 }
 
