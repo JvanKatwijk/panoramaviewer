@@ -47,6 +47,7 @@ public:
 		panoramaViewer	(QSettings *, 
 	                         int,
 	                         int,
+	                         float,
 	                         QWidget *parent = NULL);
 		~panoramaViewer	(void);
 

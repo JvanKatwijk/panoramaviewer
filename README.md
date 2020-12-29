@@ -7,7 +7,7 @@ A simple panorama viewer
 
 Sometimes one wants to get a glimpse of a whole band, no details,
 just an overview. The above picture shows - as an example - what one gets
-with a simple whip in the range 60 .. 1999 MHz. Other tools focus on details,
+with a simple whip in the range 60 .. 1100 MHz. Other tools focus on details,
 this one on the global view
 
 The picture clearly shows the bands up to 240 Mhz the FM and DAB signals,
@@ -50,6 +50,11 @@ restart.
  * Touching a location in the specturm window with the mouse and clicking
 with the right mouse button will cause the frequency to be shown on
 the top of the left part of the widget.
+
+ * the **scaler** detemines the length of the Y-axis of the spectrum, see the
+tooltip for details
+
+ * the **averager** determines the amount of averaging applied on fft output, see the tooltip for details.
 
 
 ---------------------------------------------------------------------------

@@ -66,6 +66,7 @@ int32_t res     = 1;
 	panoramaViewer::panoramaViewer (QSettings	*Si,
 	                                int		colibriIndex,
 	                                int		delayFraction,
+	                                float		overlap,
 	                                QWidget		*parent):
 	                                           QWidget (parent),
 	                                           _C_Buffer (1024 * 1024) {
@@ -77,9 +78,8 @@ int k;
 	setupUi (this);
 	minFreq		= spectrumSettings -> value ("lowEnd", 80). toInt ();
 	lowEnd		-> setValue (minFreq);
-	maxFreq		= spectrumSettings -> value ("highEnd", 240). toInt ();
 	highEnd		-> setValue (maxFreq);
-	overlapFraction	= spectrumSettings	-> value ("fraction", 0.875). toFloat ();
+	this -> overlapFraction	= overlap;
 	this -> show ();
 
 #ifdef	HAVE_SDRPLAY
@@ -206,7 +206,7 @@ void	panoramaViewer::handle_startButton () {
 	   delete theScope;
 	this	-> minFreq		= MHz (lowEnd  -> value ()); 
 	this	-> maxFreq		= MHz (highEnd -> value ());
-	this	-> segmentCoverage	= overlapFraction * fftFreq;
+	this	-> segmentCoverage	= this -> overlapFraction * fftFreq;
 	if (minFreq >= maxFreq) {
 	   this -> nrSegments	= 1;
 	   this -> maxFreq	= minFreq + fftFreq;
@@ -233,7 +233,8 @@ void	panoramaViewer::handle_startButton () {
 	                                 displaySize,
 	                                 nrSegments,
 	                                 SEGMENT_SIZE,
-	                                 OVERLAP_SIZE);
+	                                 OVERLAP_SIZE,
+	                                 averager -> value ());
 	connect (theProcessor, SIGNAL (showDisplay ()),
 	         this, SLOT (handle_showDisplay ()));
 

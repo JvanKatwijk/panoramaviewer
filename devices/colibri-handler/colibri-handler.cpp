@@ -103,7 +103,7 @@
 	connect (gainSelector, SIGNAL (valueChanged (int)),
 	         this, SLOT (set_gainControl (int)));
 
-	if (5 <= rateIndex && rateIndex <= 8)
+	if (5 <= rateIndex && rateIndex < 8)
 	   inputRate = sampleRate (rateIndex);
 	else
 	   inputRate = 2560000;

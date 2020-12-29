@@ -32,7 +32,8 @@
 	                         int	displaySize,
 	                         int	nrSegments,
 	                         int	segmentSize,
-	                         int	overlapSize) {
+	                         int	overlapSize,
+	                         int	averaging) {
 	this	-> theDevice	= theDevice;
 	this	-> _C_Buffer	= theBuffer;
 	this	-> fftSize	= fftSize;
@@ -42,6 +43,7 @@
 	this	-> nrSegments	= nrSegments;
 	this	-> segmentSize	= segmentSize;
 	this	-> overlapSize	= overlapSize;
+	this	-> averaging	= averaging;
 	fftBuffer       = (std::complex<float> *)
 	                  fftwf_malloc (sizeof (fftwf_complex) * fftSize);
 	plan    = fftwf_plan_dft_1d (fftSize,
@@ -88,6 +90,7 @@ void	Processor::switchPause	(bool b) {
 void	Processor::run		() {
 std::complex<float>Buffer [fftSize];
 double displayVector	[displaySize];
+
 	running. store (true);
 	fprintf (stderr, "we are starting\n");
 	bool b = theDevice -> restartReader (freq (0));
@@ -108,12 +111,22 @@ double displayVector	[displaySize];
 #endif
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
-	      while ((theDevice -> Samples () < 2 * fftSize) && running. load ())
+	      while ((theDevice -> Samples () < (averaging + 1) * fftSize) &&
+	                                                   running. load ())
 	         usleep (1000);
 	      if (!running. load ())
 	         goto L_end;
-	      theDevice	-> getSamples (Buffer, fftSize); // one to ignore
-	      theDevice	-> getSamples (Buffer, fftSize);
+	      for (int i = 0; i < fftSize; i ++)
+	         Buffer [i] = 0;
+	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
+	      for (int k = 0; k < averaging; k ++) {
+	         theDevice	-> getSamples (fftBuffer, fftSize);
+	         for (int i = 0; i < fftSize; i ++)
+                    fftBuffer [i] = cmul (fftBuffer [i], Window [i]);
+                 fftwf_execute (plan);
+	         for (int i = 0; i < fftSize; i ++)
+	            Buffer [i] += cmul (fftBuffer [i], 1.0 / averaging);
+	      }
 	      process_segment (i, Buffer, displayVector);
 	   }
 	   _C_Buffer  -> putDataIntoBuffer (displayVector, displaySize);
@@ -124,12 +137,9 @@ L_end:
 }
 
 void	Processor::process_segment (int segmentNo,
-	                            std::complex<float> *Buffer,
+	                            std::complex<float> *fftBuffer,
 	                            double *displayVector) {
 double segment [segmentSize];
-	for (int i = 0; i < fftSize; i ++)
-	   fftBuffer [i] = cmul (Buffer [i], Window [i]);
-	fftwf_execute (plan);
 	for (int i = 0; i < segmentSize / 2; i ++) {
 	   double f = 0;
 	   for (int j = 0; j < fftSize / segmentSize; j ++)

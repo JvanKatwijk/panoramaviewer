@@ -42,7 +42,8 @@ public:
                                  int    displaySize,
                                  int    nrSegments,
                                  int    segmentSize,
-                                 int    overlapSize);
+                                 int    overlapSize,
+	                         int	averaging);
 		~Processor	();
 	int     freq		(int segmentNumber);
 	void	stop		();
@@ -59,6 +60,7 @@ private:
 	int	nrSegments;
 	int	segmentSize;
 	int	overlapSize;
+	int	averaging;
 
 	deviceHandler		*theDevice;
 	RingBuffer<double>	*_C_Buffer;
