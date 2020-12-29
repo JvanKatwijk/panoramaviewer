@@ -107,6 +107,7 @@
 	   inputRate = sampleRate (rateIndex);
 	else
 	   inputRate = 2560000;
+	rateLabel	-> setText (QString::number (inputRate));
 	running. store (false);
 	
 	freqChanging. store (false);
