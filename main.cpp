@@ -74,7 +74,7 @@ float	overlapFactor	= 0.875;
 	         colibriIndex	= atoi (optarg);
 	         break;
 	      case 'a':
-	         overlapFactor	= atoi (optarg) / 100;
+	         overlapFactor	= atoi (optarg) / 100.0;
 	         break; 
 	      default:		// cannot happen
 	         break;
