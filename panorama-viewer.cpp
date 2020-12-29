@@ -199,6 +199,7 @@ void	panoramaViewer::activateDevice (const QString &s) {
 }
 
 void	panoramaViewer::handle_startButton () {
+	theDevice	-> stopReader ();
 	if (theProcessor != nullptr)
 	   delete theProcessor;
 	if (theScope != nullptr)

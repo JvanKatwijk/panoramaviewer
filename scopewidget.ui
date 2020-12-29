@@ -18,6 +18,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLCDNumber" name="selectedFreq">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selecting a point in the spectrum that is shown with the cursor, and pressting the mouse button right will display the frequyency belonging to thst point&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
@@ -28,6 +31,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pauseButton">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pause button: touching it will pause the processing of signals. Note: first the &lt;/p&gt;&lt;p&gt;computation of the current spectrum will be finished&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>pause</string>
        </property>
@@ -35,6 +41,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="lowEnd">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;low frequency selection (in MHz)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="minimum">
         <number>3</number>
        </property>
@@ -45,6 +54,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="highEnd">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;high frequency selection (in MHz)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="maximum">
         <number>1999</number>
        </property>
@@ -55,6 +67,9 @@
      </item>
      <item>
       <widget class="QComboBox" name="deviceSelector">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;device selector. Per program run a device is selected. actually, nothing will happen until a device is selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <item>
         <property name="text">
          <string>device selector</string>
@@ -64,6 +79,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="startButton">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;start and restart. Assuming a device is selected, the program will start to run after touching this button. If touched for a second time, a new run will be started, using the low and high frequency setting that are then visible on the spinboxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>(re)start</string>
        </property>
@@ -80,7 +98,7 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Spectrumview. &lt;/p&gt;&lt;p&gt;The spectrum of the incoming signal is shown here.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt; </string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;PanoramaViewer&lt;/p&gt;&lt;p&gt;The spectrum of the incoming signal is shown here. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>

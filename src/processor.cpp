@@ -108,8 +108,10 @@ double displayVector	[displaySize];
 #endif
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
-	      while (theDevice -> Samples () < 2 * fftSize)
+	      while ((theDevice -> Samples () < 2 * fftSize) && running. load ())
 	         usleep (1000);
+	      if (!running. load ())
+	         goto L_end;
 	      theDevice	-> getSamples (Buffer, fftSize); // one to ignore
 	      theDevice	-> getSamples (Buffer, fftSize);
 	      process_segment (i, Buffer, displayVector);
@@ -117,6 +119,7 @@ double displayVector	[displaySize];
 	   _C_Buffer  -> putDataIntoBuffer (displayVector, displaySize);
 	   emit showDisplay ();
 	}
+L_end:
 	theDevice -> stopReader ();
 }
 
