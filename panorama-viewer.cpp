@@ -64,6 +64,7 @@ int32_t res     = 1;
 }
 
 	panoramaViewer::panoramaViewer (QSettings	*Si,
+	                                int		colibriIndex,
 	                                int		delayFraction,
 	                                QWidget		*parent):
 	                                           QWidget (parent),
@@ -71,6 +72,7 @@ int32_t res     = 1;
 int k;
 // 	the setup for the generated part of the ui
 	spectrumSettings		= Si;
+	this	-> colibriIndex		= colibriIndex;
 	this	-> delayFraction	= delayFraction;
 	setupUi (this);
 	minFreq		= spectrumSettings -> value ("lowEnd", 80). toInt ();
@@ -154,7 +156,9 @@ void	panoramaViewer::activateDevice (const QString &s) {
 #ifdef	HAVE_COLIBRI
 	if (s == "colibriNano") {
 	   try {
-	      theDevice	= new colibriHandler (spectrumSettings, this -> delayFraction);
+	      theDevice	= new colibriHandler (spectrumSettings,
+	                                      this -> colibriIndex,
+	                                      this -> delayFraction);
 	      fprintf (stderr, "colibri device started\n");
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),

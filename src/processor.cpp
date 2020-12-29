@@ -91,8 +91,10 @@ double displayVector	[displaySize];
 	running. store (true);
 	fprintf (stderr, "we are starting\n");
 	bool b = theDevice -> restartReader (freq (0));
+#ifdef	__DEBUG__
 	fprintf (stderr, "we started at frequency %d with %s\n",
 	                         freq (0), b ? "success" : "failure");
+#endif
 	while (running. load ()) {
 	   for (int i = 0; i < nrSegments; i ++) {
 	      if (!running. load ())
@@ -101,7 +103,9 @@ double displayVector	[displaySize];
 	         usleep (1000000);
 	         continue;
 	      }
+#ifdef	__DEBUG__
 	      fprintf (stderr, "now ready for next segment at %d\n", freq (i));
+#endif
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
 	      while (theDevice -> Samples () < 2 * fftSize)

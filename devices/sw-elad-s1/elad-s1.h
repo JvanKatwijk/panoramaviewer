@@ -42,26 +42,23 @@ class	eladHandler: public deviceHandler, public Ui_eladWidget {
 Q_OBJECT
 public:
 		eladHandler		(QSettings *, int);
-		~eladHandler		(void);
+		~eladHandler		();
 	int32_t	get_fftWidth		();
 	void	setVFOFrequency		(int32_t);
 	bool	restartReader		(int32_t);
-	void	stopReader		(void);
+	void	stopReader		();
 	int32_t	getSamples		(std::complex<float> *, int32_t);
 	int32_t	Samples			();
 	int16_t	bitDepth		();
 	void	resetBuffer		();
 private	slots:
-	void	setGainReduction	(void);
+	void	setGainReduction	();
 	void	setFilter		();
-	void	handle_dumpButton	();
 private:
 	QSettings	*eladSettings;
 	int32_t		inputRate;
 	QFrame		myFrame;
 	RingBuffer<uint8_t>	_I_Buffer;
-	FILE		*dumpFile;
-	std::atomic<bool>	dumping;
 	int16_t		depth;
 	bool		deviceOK;
 	eladLoader	*theLoader;
@@ -73,8 +70,8 @@ private:
 	uint8_t		conversionNumber;
 	int16_t		iqSize;
 	int		delayFraction;
-signals:
-	void		samplesAvailable	(int);
+//signals:
+//	void		samplesAvailable	(int);
 };
 #endif
 

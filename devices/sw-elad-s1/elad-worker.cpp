@@ -117,8 +117,8 @@ int	rc;
 	      return;
 	   }
 	   usleep (20);
-	   if (_I_Buffer -> GetRingBufferReadAvailable () > theRate / (10 * iqSize))
-	      emit samplesAvailable (theRate / (10 * iqSize));
+//	   if (_I_Buffer -> GetRingBufferReadAvailable () > theRate / (10 * iqSize))
+//	      emit samplesAvailable (theRate / (10 * iqSize));
 	}
 	fprintf (stderr, "eladWorker now stopped\n");
 }

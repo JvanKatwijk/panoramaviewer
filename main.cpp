@@ -59,13 +59,17 @@ QSettings	*ISettings;		/* input .ini file	*/
 QString	initFileName	= fullPathfor (QString (DEFAULT_INI));
 panoramaViewer	*myRadioInterface;
 int	delayFraction	= 100;
+int	colibriIndex	= -1;
 int	opt;
 	ISettings	= new QSettings (initFileName, QSettings::IniFormat);
 
-	while ((opt = getopt (argc, argv, "M:m:f:d:")) != -1) {
+	while ((opt = getopt (argc, argv, "d:c:")) != -1) {
 	   switch (opt) {
 	      case 'd':
 	         delayFraction	= atoi (optarg);
+	         break;
+	      case 'c':
+	         colibriIndex	= atoi (optarg);
 	         break;
 	      default:		// cannot happen
 	         break;
@@ -80,7 +84,9 @@ int	opt;
 	QGuiApplication::setAttribute (Qt::AA_EnableHighDpiScaling);
 #endif
 	QApplication a (argc, argv);
-	myRadioInterface = new panoramaViewer (ISettings, delayFraction);
+	myRadioInterface = new panoramaViewer (ISettings,
+	                                       colibriIndex,
+	                                       delayFraction);
 	myRadioInterface -> show ();
 	a. exec ();
 /*

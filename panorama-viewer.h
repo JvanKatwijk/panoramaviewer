@@ -46,6 +46,7 @@ Q_OBJECT
 public:
 		panoramaViewer	(QSettings *, 
 	                         int,
+	                         int,
 	                         QWidget *parent = NULL);
 		~panoramaViewer	(void);
 
@@ -54,6 +55,7 @@ private:
 	int		maxFreq;
 	int		minFreq;
 	int		fftFreq;
+	int		colibriIndex;
 	int		delayFraction;
 	int		segmentCoverage;
 	float		overlapFraction;

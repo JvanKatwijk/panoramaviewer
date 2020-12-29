@@ -69,8 +69,6 @@ int16_t	theSuccess;
 //	number of bytes per IQ value
 	iqSize			= conversionNumber == 3 ? 4 : 8;
 //
-	dumping. store (false);
-	dumpFile		= nullptr;
 	theLoader	= new eladLoader (inputRate, &theSuccess);
 	fprintf (stderr, "we zijn terug\n");
 	if (theSuccess != 0) {
@@ -118,8 +116,6 @@ int16_t	theSuccess;
 	         this, SLOT (setGainReduction (void)));
 	connect (filter, SIGNAL (clicked (void)),
 	         this, SLOT (setFilter (void)));
-	connect (dumpButton, SIGNAL (clicked (void)),
-	         this, SLOT (handle_dumpButton ()));
 	rateDisplay	-> display (inputRate);
 }
 
@@ -166,8 +162,8 @@ bool	success;
 	                                  iqSize,
 	                                  delayFraction,
 	                                  &success);
-	connect (theWorker, SIGNAL (samplesAvailable (int)),
-	         this, SIGNAL (samplesAvailable (int)));
+//	connect (theWorker, SIGNAL (samplesAvailable (int)),
+//	         this, SIGNAL (samplesAvailable (int)));
 	fprintf (stderr,
 	         "restarted eladWorker with %s\n",
 	                  success ? "success" : "no success");
@@ -271,9 +267,6 @@ uint8_t		buf [iqSize * size];
 
 	amount = _I_Buffer. getDataFromBuffer (buf, iqSize * size);
 
-	if (dumping. load ())
-	   fwrite (buf, iqSize, size, dumpFile);
-
 	for (i = 0; i < amount / iqSize; i ++)  {
 	   switch (conversionNumber) {
 	      case 1: default:
@@ -322,24 +315,4 @@ void	eladHandler::setFilter	(void) {
 	filterText	-> setText (localFilter == 1 ? "30 Mhz" : "no filter");
 }
 
-void	eladHandler::handle_dumpButton	() {
-	if (dumping. load ()) {
-	   dumping. store (false);
-	   fclose (dumpFile);
-	   dumpButton -> setText ("dumpButton");
-	   dumpFile	= nullptr;
-	   return;
-	}
-        QString fileName = QFileDialog::getSaveFileName (nullptr,
-                                                 tr ("Save file ..."),
-                                                 QDir::homePath(),
-                                                 tr ("ela (*.ela)"));
-        fileName	= QDir::toNativeSeparators (fileName);
-        dumpFile	= fopen (fileName. toUtf8 (). data (), "w");
-        if (dumpFile == nullptr)
-           return;
-
-	dumping. store (true);
-	dumpButton	-> setText ("DUMPING");
-}
 

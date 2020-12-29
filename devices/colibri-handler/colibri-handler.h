@@ -74,7 +74,7 @@ class	colibriHandler: public deviceHandler, public Ui_colibriWidget {
 Q_OBJECT
 public:
 
-			colibriHandler		(QSettings *, int);
+			colibriHandler		(QSettings *, int, int);
 			~colibriHandler		(void);
 	int32_t		get_fftWidth		(void);
 	void		setVFOFrequency		(int32_t);

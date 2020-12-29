@@ -37,6 +37,7 @@
 #endif
 
 	colibriHandler::colibriHandler  (QSettings *s,
+	                                 int	rateIndex,
 	                                 int	delayFraction):
 	                                  _I_Buffer (4 * 1024 * 1024),
 	                                  myFrame (nullptr) {
@@ -102,8 +103,12 @@
 	connect (gainSelector, SIGNAL (valueChanged (int)),
 	         this, SLOT (set_gainControl (int)));
 
+	if (5 <= rateIndex && rateIndex <= 8)
+	   inputRate = sampleRate (rateIndex);
+	else
+	   inputRate = 2560000;
 	running. store (false);
-	inputRate	= 2560000;
+	
 	freqChanging. store (false);
 }
 
@@ -123,7 +128,9 @@ int32_t	colibriHandler::get_fftWidth	() {
 
 void	colibriHandler::setVFOFrequency	(int32_t newFrequency) {
         colibri_setFrequency (m_deskriptor, newFrequency);
+#ifdef	__DEBUG__
 	fprintf (stderr, "setting colibri freq to %d\n", newFrequency);
+#endif
 	freqChanging. store (true);
 	this	-> lastFrequency	= newFrequency;
 }

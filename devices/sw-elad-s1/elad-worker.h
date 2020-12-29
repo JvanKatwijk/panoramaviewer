@@ -61,8 +61,8 @@ private:
 	int32_t			theRate;
 	std::atomic<bool>	freqChanging;
 	int			delayFraction;
-signals:
-	void			samplesAvailable	(int);
+//signals:
+//	void			samplesAvailable	(int);
 };
 #endif
 
