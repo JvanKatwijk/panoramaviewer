@@ -79,10 +79,12 @@ int k;
 	minFreq		= spectrumSettings -> value ("lowEnd", 80). toInt ();
 	maxFreq		= spectrumSettings -> value ("highEnd", 80). toInt ();
 	int avg		= spectrumSettings -> value ("averaging", 1). toInt ();
-	int scale	= spectrumSettings -> value ("scaler", 1). toInt ();
+	int scaleW	= spectrumSettings -> value ("scaleW", 6). toInt ();
+	int scaleB	= spectrumSettings -> value ("scaleB", 7). toInt ();
 	lowEnd		-> setValue (minFreq);
 	highEnd		-> setValue (maxFreq);
-	scaler		-> setValue (scale);
+	scalerWidth	-> setValue (scaleW);
+	scalerBase	-> setValue (scaleB);
 	averager	-> setValue (avg);
 	this -> overlapFraction	= overlap;
 	this -> show ();
@@ -227,7 +229,8 @@ void	panoramaViewer::handle_startButton () {
 	                             minFreq,
 	                             this -> maxFreq,
 	                             theDevice -> bitDepth (),
-	                             scaler	-> value ());
+	                             scalerBase		-> value (),
+	                             scalerWidth	-> value ());
 	connect (theScope, SIGNAL (clickedwithRight (int)),
 	         this, SLOT (handle_clickedwithRight (int)));
 	theProcessor	= new Processor (theDevice,
@@ -255,7 +258,8 @@ void	panoramaViewer::TerminateProcess () {
 	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
 	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
 	spectrumSettings	-> setValue ("averaging", averager -> value ());
-	spectrumSettings	-> setValue ("scaler", scaler -> value ());
+	spectrumSettings	-> setValue ("scaleW", scalerWidth -> value ());
+	spectrumSettings	-> setValue ("scaleR", scalerBase -> value ());
 	spectrumSettings	-> sync ();
 	if (theProcessor != nullptr)
 	   delete		theProcessor;

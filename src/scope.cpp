@@ -39,16 +39,17 @@ int res	= 1;
 	                         int	startFreq,
                                  int	maxFreq,	// MAX_FREQ,
                                  int	bitDepth, 	// bitDepth ()
-	                         int	scalerValue
+	                         int	scalerBase,
+	                         int	scalerWidth
                                 ) {
 
 QString	colorString	= "black";
+bool	brush;
 	plotgrid		= plot;
 	this	-> displaySize	= displaySize;
 	this	-> baseLine	= shifter (bitDepth);
-	this	-> scaler	= scalerValue;
-bool	brush;
-	fprintf (stderr, "scaler %d\n", this -> scaler);
+	this	-> scalerB	= scalerBase;
+	this	-> scalerW	= scalerWidth;
 	displayColor		= QColor ("black");
 	gridColor		= QColor ("white");
 	curveColor		= QColor ("white");
@@ -99,12 +100,9 @@ bool	brush;
 }
 
 void	Scope::show	(double *v) {
-float mmax	= 0;
 
 	for (int i = 0; i < displaySize; i ++) {
 	   Y_Values [i] =  get_db (v [i]);
-	   if (Y_Values [i] > mmax)
-	      mmax = Y_Values [i];
 	}
 
 
@@ -113,14 +111,12 @@ float mmax	= 0;
                                          X_Values [displaySize - 1]);
         plotgrid        -> enableAxis (QwtPlot::xBottom);
         plotgrid        -> setAxisScale (QwtPlot::yLeft,
-                                         get_db (0),  scaler == 1 ? mmax :
-	                                              scaler == 2 ? -20 : -40);
-//	                                 get_db (0),  mmax / scaler);
+                                         scalerB * -10,
+	                                 scalerB * -10 + scalerW * 10);
         plotgrid        -> enableAxis (QwtPlot::yLeft);
-        spectrumCurve	-> setBaseline  (get_db (0));
-
-        Y_Values [0]			= get_db (0);
-        Y_Values [displaySize - 1]	= get_db (0);
+        spectrumCurve	-> setBaseline  (scalerB * -10);
+        Y_Values [0]			= scalerB * -10;
+        Y_Values [displaySize - 1]	= scalerB * -10;
         spectrumCurve	-> setSamples (X_Values, Y_Values, displaySize);
         plotgrid        -> replot();
 }

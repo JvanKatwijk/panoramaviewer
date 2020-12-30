@@ -54,7 +54,8 @@ public:
 	                         int,		// Start Frequency
 	                         int,		// MAX_FREQ,
 	                         int,		// bitDepth ()
-	                         int		// scaler
+	                         int,		// scalerBase
+	                         int		// scalerWidth
 	                        );
 			~Scope	();
 	void		show	(double *);
@@ -72,7 +73,8 @@ private:
 	QwtPlotPicker   *lm_picker;
 	int		baseLine;
 	float		get_db		(float);
-	int		scaler;
+	int		scalerB;
+	int		scalerW;
 public slots:
 	void		rightMouseClick	(const QPointF &);
 signals:
