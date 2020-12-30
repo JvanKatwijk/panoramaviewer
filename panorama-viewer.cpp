@@ -35,14 +35,17 @@
 #ifdef	HAVE_SDRPLAY_V3
 #include	"sdrplay-handler-v3.h"
 #endif
-#ifdef	HAVE_RTLSDR
-#include	"rtlsdr-handler.h"
-#endif
 #ifdef	HAVE_COLIBRI
 #include	"colibri-handler.h"
 #endif
 #ifdef	HAVE_ELAD_S1
 #include	"elad-s1.h"
+#endif
+#ifdef	HAVE_RTLSDR
+#include	"rtlsdr-handler.h"
+#endif
+#ifdef	HAVE_AIRSPY
+#include	"airspy-handler.h"
 #endif
 #ifdef __MINGW32__
 #include	<iostream>
@@ -103,6 +106,9 @@ int k;
 #endif
 #ifdef	HAVE_RTLSDR
 	deviceSelector	-> addItem ("rtlsdr");
+#endif
+#ifdef	HAVE_AIRSPY
+	deviceSelector	-> addItem ("airspy");
 #endif
 
 	if (deviceSelector	-> count () == 0) {
@@ -179,6 +185,18 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	if (s == "rtlsdr") {
 	   try {
 	      theDevice	= new rtlsdrHandler (spectrumSettings);
+	   } catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"),
+                                       tr ("Opening  device failed\n"));
+	      return;
+	   }
+	}
+	else 	// cannot happen
+#endif
+#ifdef	HAVE_AIRSPY
+	if (s == "airspy") {
+	   try {
+	      theDevice	= new airspyHandler (spectrumSettings);
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                        tr ("Opening  device failed\n"));

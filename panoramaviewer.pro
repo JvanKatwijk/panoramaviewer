@@ -68,7 +68,8 @@ CONFIG		+= sdrplay
 CONFIG		+= sdrplay-v3
 CONFIG		+= elad-s1
 CONFIG		+= colibri
-#CONFIG		+= rtlsdr
+CONFIG		+= rtlsdr
+CONFIG		+= airspy
 }
 
 ## and for windows32 we use:
@@ -201,3 +202,12 @@ rtlsdr {
 	                   ./devices/rtlsdr-handler/dongleselect.cpp
 	FORMS		+= ./devices/rtlsdr-handler/dabstick-widget.ui
 }
+airspy {
+        DEFINES         += HAVE_AIRSPY
+        INCLUDEPATH     += ./devices/airspy-handler \
+                           ./devices/airspy-handler/libairspy
+        HEADERS         += ./devices/airspy-handler/airspy-handler.h
+        SOURCES         += ./devices/airspy-handler/airspy-handler.cpp
+        FORMS           += ./devices/airspy-handler/airspy-widget.ui
+}
+

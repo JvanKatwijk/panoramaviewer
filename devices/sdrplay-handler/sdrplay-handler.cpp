@@ -448,11 +448,11 @@ static	int cnt		= 0;
 	}
 	if (p -> freqChanging. load ()) {
 	   cnt += numSamples;
-	   if (cnt > 800000) {
+	   if (cnt > 2 * 800000) {
 	      p -> freqChanging. store (false);
 	      cnt = 0;
-	      return;
 	   }
+	   return;
 	}
 	for (i = 0; i <  (int)numSamples; i ++)
 	   localBuf [i] = std::complex<float> (float (xi [i]) / denominator,

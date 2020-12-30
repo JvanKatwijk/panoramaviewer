@@ -111,13 +111,16 @@ double displayVector	[displaySize];
 #endif
 	      theDevice -> setVFOFrequency (freq (i));
 	      theDevice	-> resetBuffer ();
-	      while ((theDevice -> Samples () < (averaging + 1) * fftSize) &&
+	      while ((theDevice -> Samples () < (averaging + 4) * fftSize) &&
 	                                                   running. load ())
 	         usleep (1000);
 	      if (!running. load ())
 	         goto L_end;
 	      for (int j = 0; j < fftSize; j ++)
 	         Buffer [j] = 0;
+	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
+	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
+	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
 	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
 	      for (int k = 0; k < averaging; k ++) {
 	         theDevice	-> getSamples (fftBuffer, fftSize);
