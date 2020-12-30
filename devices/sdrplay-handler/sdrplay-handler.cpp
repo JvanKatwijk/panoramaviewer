@@ -442,8 +442,10 @@ float	denominator	= p -> denominator;
 static	int cnt		= 0;
 	if (reset || hwRemoved)
 	   return;
-	if (rfChanged) 
+	if (rfChanged) {
 	   p -> freqChanging. store (false);
+	   cnt = 0;
+	}
 	if (p -> freqChanging. load ()) {
 	   cnt += numSamples;
 	   if (cnt > 800000) {
