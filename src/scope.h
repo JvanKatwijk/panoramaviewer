@@ -46,6 +46,7 @@
 #include        <qwt_scale_widget.h>
 #include        <QBrush>
 
+class	QSpinBox;
 class	Scope: public QObject {
 Q_OBJECT
 public:
@@ -54,8 +55,8 @@ public:
 	                         int,		// Start Frequency
 	                         int,		// MAX_FREQ,
 	                         int,		// bitDepth ()
-	                         int,		// scalerBase
-	                         int		// scalerWidth
+	                         QSpinBox	*,	// scalerBase
+	                         QSpinBox	*	// scalerWidth
 	                        );
 			~Scope	();
 	void		show	(double *);
@@ -73,8 +74,8 @@ private:
 	QwtPlotPicker   *lm_picker;
 	int		baseLine;
 	float		get_db		(float);
-	int		scalerB;
-	int		scalerW;
+	QSpinBox	*scalerB;
+	QSpinBox	*scalerW;
 public slots:
 	void		rightMouseClick	(const QPointF &);
 signals:

@@ -23,6 +23,7 @@
 
 #include	"scope.h"
 #include	<QColor>
+#include	<QSpinBox>
 
 static inline
 int	shifter (int n) {
@@ -35,12 +36,12 @@ int res	= 1;
 }
 
 		Scope::Scope   (QwtPlot	*plot,
-                                 int	displaySize,	// DISPLAY_SIZE,
-	                         int	startFreq,
-                                 int	maxFreq,	// MAX_FREQ,
-                                 int	bitDepth, 	// bitDepth ()
-	                         int	scalerBase,
-	                         int	scalerWidth
+                                int	displaySize,	// DISPLAY_SIZE,
+	                        int	startFreq,
+                                int	maxFreq,	// MAX_FREQ,
+                                int	bitDepth, 	// bitDepth ()
+	                        QSpinBox	*scalerBase,
+	                        QSpinBox	*scalerWidth
                                 ) {
 
 QString	colorString	= "black";
@@ -111,12 +112,13 @@ void	Scope::show	(double *v) {
                                          X_Values [displaySize - 1]);
         plotgrid        -> enableAxis (QwtPlot::xBottom);
         plotgrid        -> setAxisScale (QwtPlot::yLeft,
-                                         scalerB * -10,
-	                                 scalerB * -10 + scalerW * 10);
+                                         scalerB -> value () * -10,
+	                                 scalerB -> value ()* -10 +
+	                                        scalerW -> value () * 10);
         plotgrid        -> enableAxis (QwtPlot::yLeft);
-        spectrumCurve	-> setBaseline  (scalerB * -10);
-        Y_Values [0]			= scalerB * -10;
-        Y_Values [displaySize - 1]	= scalerB * -10;
+        spectrumCurve	-> setBaseline  (scalerB -> value () * -10);
+        Y_Values [0]			= scalerB -> value () * -10;
+        Y_Values [displaySize - 1]	= scalerB -> value () * -10;
         spectrumCurve	-> setSamples (X_Values, Y_Values, displaySize);
         plotgrid        -> replot();
 }

@@ -229,8 +229,8 @@ void	panoramaViewer::handle_startButton () {
 	                             minFreq,
 	                             this -> maxFreq,
 	                             theDevice -> bitDepth (),
-	                             scalerBase		-> value (),
-	                             scalerWidth	-> value ());
+	                             scalerBase,
+	                             scalerWidth);
 	connect (theScope, SIGNAL (clickedwithRight (int)),
 	         this, SLOT (handle_clickedwithRight (int)));
 	theProcessor	= new Processor (theDevice,
