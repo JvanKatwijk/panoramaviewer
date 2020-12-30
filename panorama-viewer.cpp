@@ -77,8 +77,13 @@ int k;
 	this	-> delayFraction	= delayFraction;
 	setupUi (this);
 	minFreq		= spectrumSettings -> value ("lowEnd", 80). toInt ();
+	maxFreq		= spectrumSettings -> value ("highEnd", 80). toInt ();
+	int avg		= spectrumSettings -> value ("averaging", 1). toInt ();
+	int scale	= spectrumSettings -> value ("scaler", 1). toInt ();
 	lowEnd		-> setValue (minFreq);
 	highEnd		-> setValue (maxFreq);
+	scaler		-> setValue (scale);
+	averager	-> setValue (avg);
 	this -> overlapFraction	= overlap;
 	this -> show ();
 
@@ -245,8 +250,12 @@ void	panoramaViewer::TerminateProcess () {
 	if (theProcessor != nullptr) {
 	   theProcessor	-> stop ();
 	}
+	fprintf (stderr, "writing settings %d %d\n",
+	lowEnd -> value (), highEnd -> value ());
 	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
 	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
+	spectrumSettings	-> setValue ("averaging", averager -> value ());
+	spectrumSettings	-> setValue ("scaler", scaler -> value ());
 	spectrumSettings	-> sync ();
 	if (theProcessor != nullptr)
 	   delete		theProcessor;

@@ -27,7 +27,7 @@
 static inline
 int	shifter (int n) {
 int res	= 1;
-	while (n >= 1) {
+	while (n > 2) {
 	   res <<= 1;
 	   n --;
 	}
