@@ -439,13 +439,19 @@ int16_t	i;
 sdrplayHandler	*p	= static_cast<sdrplayHandler *> (cbContext);
 std::complex<float> localBuf [numSamples];
 float	denominator	= p -> denominator;
+static	int cnt		= 0;
 	if (reset || hwRemoved)
 	   return;
-
 	if (rfChanged) 
 	   p -> freqChanging. store (false);
-	if (p -> freqChanging. load ())
-	   return;
+	if (p -> freqChanging. load ()) {
+	   cnt += numSamples;
+	   if (cnt > 800000) {
+	      p -> freqChanging. store (false);
+	      cnt = 0;
+	      return;
+	   }
+	}
 	for (i = 0; i <  (int)numSamples; i ++)
 	   localBuf [i] = std::complex<float> (float (xi [i]) / denominator,
 	                                       float (xq [i]) / denominator);

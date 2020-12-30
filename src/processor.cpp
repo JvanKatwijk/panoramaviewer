@@ -116,16 +116,16 @@ double displayVector	[displaySize];
 	         usleep (1000);
 	      if (!running. load ())
 	         goto L_end;
-	      for (int i = 0; i < fftSize; i ++)
-	         Buffer [i] = 0;
+	      for (int j = 0; j < fftSize; j ++)
+	         Buffer [j] = 0;
 	      theDevice	-> getSamples (fftBuffer, fftSize); // one to ignore
 	      for (int k = 0; k < averaging; k ++) {
 	         theDevice	-> getSamples (fftBuffer, fftSize);
-	         for (int i = 0; i < fftSize; i ++)
-                    fftBuffer [i] = cmul (fftBuffer [i], Window [i]);
+	         for (int j = 0; j < fftSize; j ++)
+                    fftBuffer [j] = cmul (fftBuffer [j], Window [j]);
                  fftwf_execute (plan);
-	         for (int i = 0; i < fftSize; i ++)
-	            Buffer [i] += cmul (fftBuffer [i], 1.0 / averaging);
+	         for (int j = 0; j < fftSize; j ++)
+	            Buffer [j] += cmul (fftBuffer [j], 1.0 / averaging);
 	      }
 	      process_segment (i, Buffer, displayVector);
 	   }
