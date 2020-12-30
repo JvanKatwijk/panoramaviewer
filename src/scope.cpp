@@ -131,6 +131,8 @@ void	Scope::rightMouseClick (const QPointF&point) {
 }
 
 float	Scope::get_db (float x) {
+	if (x == 0)
+	   return -60;
 	return 20 * log10 ((x + 1) / baseLine);
 }
 
