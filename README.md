@@ -23,7 +23,6 @@ panoramaViewer is - still work in progress - a simple tool to show an
 arbitrary wide segment of the spectrum - provided the frequencies are
 supported by the input device.
 
-
 --------------------------------------------------------------------------
 How to use panoramaViewer
 --------------------------------------------------------------------------
@@ -46,6 +45,8 @@ A restart is useful when changing the parameters. Note that changing
 the setting of the minimum or the maximum frequency has no
 effect on the current run of the program. It will have effect after a
 restart.
+
+ * the vertical range of the scope can be set - in steps of 5 dB. The left spinbox defines the width, the right spinbox defines the baseline. Settings are immediate.
 
  * Touching a location in the specturm window with the mouse and clicking
 with the right mouse button will cause the frequency to be shown on

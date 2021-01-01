@@ -100,6 +100,7 @@ bool	brush;
 	delete		Y_Values;
 }
 
+#define	SCOPE_STEP	5
 void	Scope::show	(double *v) {
 
 	for (int i = 0; i < displaySize; i ++) {
@@ -112,13 +113,13 @@ void	Scope::show	(double *v) {
                                          X_Values [displaySize - 1]);
         plotgrid        -> enableAxis (QwtPlot::xBottom);
         plotgrid        -> setAxisScale (QwtPlot::yLeft,
-                                         scalerB -> value () * -10,
-	                                 scalerB -> value ()* -10 +
-	                                        scalerW -> value () * 10);
+                                         scalerB -> value () * (- SCOPE_STEP),
+	                                 scalerB -> value () * (- SCOPE_STEP) +
+	                                        scalerW -> value () * SCOPE_STEP);
         plotgrid        -> enableAxis (QwtPlot::yLeft);
-        spectrumCurve	-> setBaseline  (scalerB -> value () * -10);
-        Y_Values [0]			= scalerB -> value () * -10;
-        Y_Values [displaySize - 1]	= scalerB -> value () * -10;
+        spectrumCurve	-> setBaseline  (scalerB -> value () * (- SCOPE_STEP));
+        Y_Values [0]			= scalerB -> value () * (- SCOPE_STEP);
+        Y_Values [displaySize - 1]	= scalerB -> value () * (- SCOPE_STEP);
         spectrumCurve	-> setSamples (X_Values, Y_Values, displaySize);
         plotgrid        -> replot();
 }
@@ -129,8 +130,6 @@ void	Scope::rightMouseClick (const QPointF&point) {
 }
 
 float	Scope::get_db (float x) {
-	if (x == 0)
-	   return -60;
 	return 20 * log10 ((x + 1) / baseLine);
 }
 

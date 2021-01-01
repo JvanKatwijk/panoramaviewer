@@ -59,10 +59,10 @@
      <item row="2" column="0">
       <widget class="QSpinBox" name="scalerWidth">
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;While the default setting for the Y-axis of the display is from -xx .. 0, setting this spinbox to 2 will shorten the Y-axis (after a restart) to -xx .. -20, and setting the spinbox to 3 to -xx .. -40&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The range of the Y-axis of the scope. stepsize is 5 dB, so when the scalerBase = set to 10, and the scalerwidth is set to 5, the scope has a Y-axis of -50 .. -25 dB&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="maximum">
-        <number>14</number>
+        <number>28</number>
        </property>
        <property name="value">
         <number>6</number>
@@ -71,11 +71,14 @@
      </item>
      <item row="2" column="1" colspan="2">
       <widget class="QSpinBox" name="scalerBase">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;scalerBase, sets the baseLine of the scope to a value, stepsize is 5, so a value of 10 gives a baseline of -50 dB&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
        <property name="maximum">
-        <number>14</number>
+        <number>28</number>
        </property>
        <property name="value">
         <number>6</number>
@@ -85,14 +88,14 @@
      <item row="3" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>width (10 dB steps)</string>
+        <string>width (5 dB steps)</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1" colspan="2">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>scaler base (10 dB steps)</string>
+        <string>scaler base (5 dB steps)</string>
        </property>
       </widget>
      </item>

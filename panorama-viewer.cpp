@@ -271,13 +271,14 @@ void	panoramaViewer::TerminateProcess () {
 	if (theProcessor != nullptr) {
 	   theProcessor	-> stop ();
 	}
-	fprintf (stderr, "writing settings %d %d\n",
-	lowEnd -> value (), highEnd -> value ());
+	fprintf (stderr, "writing settings %d %d %d %d\n",
+	lowEnd -> value (), highEnd -> value (),
+	scalerBase -> value (), scalerWidth -> value ());
 	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
 	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
 	spectrumSettings	-> setValue ("averaging", averager -> value ());
 	spectrumSettings	-> setValue ("scaleW", scalerWidth -> value ());
-	spectrumSettings	-> setValue ("scaleR", scalerBase -> value ());
+	spectrumSettings	-> setValue ("scaleB", scalerBase -> value ());
 	spectrumSettings	-> sync ();
 	if (theProcessor != nullptr)
 	   delete		theProcessor;
