@@ -79,7 +79,7 @@ private:
 public slots:
 	void		rightMouseClick	(const QPointF &);
 signals:
-	void		clickedwithRight	(int);
+	void		clickedwithRight	(int, int);
 };
 
 #endif

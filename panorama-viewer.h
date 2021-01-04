@@ -75,7 +75,7 @@ public slots:
 	void		handle_showDisplay	();
 	void		closeEvent		(QCloseEvent *event);
 	void		handle_pauseButton	();
-	void		handle_clickedwithRight	(int);
+	void		handle_clickedwithRight	(int, int);
 	void		handle_startButton	();
 };
 

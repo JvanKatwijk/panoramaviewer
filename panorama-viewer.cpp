@@ -79,13 +79,13 @@ int k;
 	this	-> colibriIndex		= colibriIndex;
 	this	-> delayFraction	= delayFraction;
 	setupUi (this);
-	minFreq		= spectrumSettings -> value ("lowEnd", 80). toInt ();
-	maxFreq		= spectrumSettings -> value ("highEnd", 80). toInt ();
+	int center		= spectrumSettings -> value ("centerFreq", 80). toInt ();
+	int widthS		= spectrumSettings -> value ("width", 80). toInt ();
 	int avg		= spectrumSettings -> value ("averaging", 1). toInt ();
 	int scaleW	= spectrumSettings -> value ("scaleW", 6). toInt ();
 	int scaleB	= spectrumSettings -> value ("scaleB", 7). toInt ();
-	lowEnd		-> setValue (minFreq);
-	highEnd		-> setValue (maxFreq);
+	centerFreq	-> setValue (center);
+	bandWidth	-> setValue (widthS);
 	scalerWidth	-> setValue (scaleW);
 	scalerBase	-> setValue (scaleB);
 	averager	-> setValue (avg);
@@ -229,9 +229,15 @@ void	panoramaViewer::handle_startButton () {
 	   delete theProcessor;
 	if (theScope != nullptr)
 	   delete theScope;
-	this	-> minFreq		= MHz (lowEnd  -> value ()); 
-	this	-> maxFreq		= MHz (highEnd -> value ());
+	int	midden			= MHz (centerFreq -> value ());
+	int	breedte			= MHz (bandWidth -> value ());
+	this	-> minFreq		= midden - breedte / 2;
+	this	-> maxFreq		= midden + breedte / 2;
 	this	-> segmentCoverage	= this -> overlapFraction * fftFreq;
+	if (minFreq < 0)
+	   minFreq = MHz (10);
+	if (maxFreq > MHz (2000))
+	   maxFreq = MHz (1999);
 	if (minFreq >= maxFreq) {
 	   this -> nrSegments	= 1;
 	   this -> maxFreq	= minFreq + fftFreq;
@@ -249,8 +255,8 @@ void	panoramaViewer::handle_startButton () {
 	                             theDevice -> bitDepth (),
 	                             scalerBase,
 	                             scalerWidth);
-	connect (theScope, SIGNAL (clickedwithRight (int)),
-	         this, SLOT (handle_clickedwithRight (int)));
+	connect (theScope, SIGNAL (clickedwithRight (int, int)),
+	         this, SLOT (handle_clickedwithRight (int, int)));
 	theProcessor	= new Processor (theDevice,
 	                                 &_C_Buffer,
 	                                 FFT_SIZE,
@@ -271,11 +277,9 @@ void	panoramaViewer::TerminateProcess () {
 	if (theProcessor != nullptr) {
 	   theProcessor	-> stop ();
 	}
-	fprintf (stderr, "writing settings %d %d %d %d\n",
-	lowEnd -> value (), highEnd -> value (),
-	scalerBase -> value (), scalerWidth -> value ());
-	spectrumSettings	-> setValue ("lowEnd", lowEnd -> value ());
-	spectrumSettings	-> setValue ("highEnd", highEnd -> value ());
+	spectrumSettings	-> setValue ("centerFreq",
+	                                         centerFreq -> value ());
+	spectrumSettings	-> setValue ("width", bandWidth -> value ());
 	spectrumSettings	-> setValue ("averaging", averager -> value ());
 	spectrumSettings	-> setValue ("scaleW", scalerWidth -> value ());
 	spectrumSettings	-> setValue ("scaleB", scalerBase -> value ());
@@ -322,7 +326,8 @@ void	panoramaViewer::handle_pauseButton	() {
 	   theProcessor	-> switchPause (paused. load ());
 }
 
-void	panoramaViewer::handle_clickedwithRight (int n) {
+void	panoramaViewer::handle_clickedwithRight (int n, int v) {
 	selectedFreq	-> display ((int)(n / 1000));
+	Strength	-> display (v);
 }
 

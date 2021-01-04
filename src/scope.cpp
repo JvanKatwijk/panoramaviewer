@@ -125,8 +125,7 @@ void	Scope::show	(double *v) {
 }
 
 void	Scope::rightMouseClick (const QPointF&point) {
-	clickedwithRight ((int)(point. x()));
-	fprintf (stderr, "de x as waarde is %d\n", (int)(point. x()));
+	clickedwithRight ((int)(point. x()), (int)(point. y()));
 }
 
 float	Scope::get_db (float x) {

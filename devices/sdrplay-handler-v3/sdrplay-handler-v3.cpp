@@ -314,7 +314,7 @@ void    StreamACallback (short *xi, short *xq,
                          void *cbContext) {
 sdrplayHandler_v3 *p	= static_cast<sdrplayHandler_v3 *> (cbContext);
 std::complex<int16_t> localBuf [numSamples];
-static int teller	= 0;
+static int cnt	= 0;
 
 	(void)params;
 	if (reset)
@@ -325,8 +325,17 @@ static int teller	= 0;
 	if (params -> rfChanged != 0) {
 	   p -> freqChanging. store (false);
 	}
-	if (p -> freqChanging. load ())
-	   return;
+
+	if (p -> freqChanging. load ()) {
+           cnt += numSamples;
+           if (cnt > 2 * 800000) {
+              p -> freqChanging. store (false);
+              cnt = 0;
+           }
+	   else
+              return;
+        }
+
 
 	for (int i = 0; i <  (int)numSamples; i ++) {
 	   std::complex<int16_t> symb = std::complex<int16_t> (xi [i], xq [i]);
