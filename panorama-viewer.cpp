@@ -271,7 +271,7 @@ void	panoramaViewer::handle_startButton () {
 	
 	theScope	= new Scope (panoramaScope,
 	                             displaySize,
-	                             minFreq + (1 - overlapFractiomn) * fftFreq,
+	                             minFreq + (1 - overlapFraction) * fftFreq,
 	                             minFreq + nrSegments * segmentCoverage,
 	                             theDevice -> bitDepth (),
 	                             scalerBase,

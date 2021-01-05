@@ -48,12 +48,8 @@ typedef	void	*HINSTANCE;
 //
 //      fundamental parameters 
 
-//#define MAX_FREQ        950000000
-//#define	MIN_FREQ	85000000
-//#define FFT_FREQ	8000000
-//
 //	derived values
-#define SEGMENT_SIZE    128
+#define SEGMENT_SIZE    256
 #define FFT_SIZE	2048
 
 /*
