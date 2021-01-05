@@ -61,7 +61,6 @@ panoramaViewer	*myRadioInterface;
 int	delayFraction	= 100;
 int	colibriIndex	= -1;
 int	opt;
-float	overlapFactor	= 0.875;
 
 	ISettings	= new QSettings (initFileName, QSettings::IniFormat);
 
@@ -73,18 +72,11 @@ float	overlapFactor	= 0.875;
 	      case 'c':
 	         colibriIndex	= atoi (optarg);
 	         break;
-	      case 'a':
-	         overlapFactor	= atoi (optarg) / 1000.0;
-	         break; 
 	      default:		// cannot happen
 	         break;
 	   }
 	}
 
-	if (overlapFactor < 0)
-	   overlapFactor = 0.875;
-	if (overlapFactor > 100)
-	   overlapFactor = 0.875;
 /*
  *	Before we connect control to the gui, we have to
  *	instantiate
@@ -95,8 +87,7 @@ float	overlapFactor	= 0.875;
 	QApplication a (argc, argv);
 	myRadioInterface = new panoramaViewer (ISettings,
 	                                       colibriIndex,
-	                                       delayFraction,
-	                                       overlapFactor);
+	                                       delayFraction);
 	myRadioInterface -> show ();
 	a. exec ();
 /*

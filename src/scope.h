@@ -64,7 +64,7 @@ private:
 	QColor		displayColor;
 	QColor		gridColor;
 	QColor		curveColor;
-	int16_t		displaySize;
+	int		displaySize;
 	double		*X_Values;
 	double		*Y_Values;
 	QwtPlot		*plotgrid;

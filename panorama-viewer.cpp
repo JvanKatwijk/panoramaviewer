@@ -55,7 +55,6 @@
 	panoramaViewer::panoramaViewer (QSettings	*Si,
 	                                int		colibriIndex,
 	                                int		delayFraction,
-	                                float		overlap,
 	                                QWidget		*parent):
 	                                           QWidget (parent),
 	                                           _C_Buffer (1024 * 1024) {
@@ -70,12 +69,13 @@ int k;
 	int avg		= spectrumSettings -> value ("averaging", 1). toInt ();
 	int scaleW	= spectrumSettings -> value ("scaleW", 6). toInt ();
 	int scaleB	= spectrumSettings -> value ("scaleB", 7). toInt ();
+	int overlap	= spectrumSettings -> value ("overlap", 125). toInt ();
 	centerFreq	-> setValue (center);
 	bandWidth	-> setValue (widthS);
 	scalerWidth	-> setValue (scaleW);
 	scalerBase	-> setValue (scaleB);
+	overlapper	-> setValue (overlap);
 	averager	-> setValue (avg);
-	this		-> overlapFraction	= overlap;
 	this -> show ();
 
 #ifdef	HAVE_SDRPLAY
@@ -243,6 +243,10 @@ void	panoramaViewer::activateDevice (const QString &s) {
 }
 
 void	panoramaViewer::handle_startButton () {
+float	overlap;
+int	segmentCoverage;
+int	nrSegments;
+
 	theDevice	-> stopReader ();
 	if (theProcessor != nullptr)
 	   delete theProcessor;
@@ -250,28 +254,26 @@ void	panoramaViewer::handle_startButton () {
 	   delete theScope;
 	int	midden			= MHz (centerFreq -> value ());
 	int	breedte			= MHz (bandWidth -> value ());
-	this	-> minFreq		= midden - breedte / 2;
-	this	-> maxFreq		= midden + breedte / 2;
-	this	-> segmentCoverage	= this -> overlapFraction * fftFreq;
+	int 	minFreq			= midden - breedte / 2;
+	int	maxFreq			= midden + breedte / 2;
+	overlap				= overlapper -> value () / 1000.0;
+	segmentCoverage			= (1 - overlap) * fftFreq;
 	fprintf (stderr, "segment coverage %d\n", segmentCoverage);
 	if (minFreq < 0)
 	   minFreq = MHz (10);
 	if (maxFreq > MHz (2000))
 	   maxFreq = MHz (1999);
 	if ((minFreq >= maxFreq) || (maxFreq < minFreq + fftFreq)) {
-	   this -> nrSegments	= 1;
-	   this -> maxFreq	= minFreq + fftFreq;
+	   nrSegments	= 1;
 	}
 	else 
-	   this	-> nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
+	   nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
 
 	fprintf (stderr, "nr segments %d\n", nrSegments);
-	this	-> displaySize		= nrSegments * overlapFraction * SEGMENT_SIZE;
-	this	-> maxFreq		= minFreq + nrSegments * segmentCoverage;
-	
+	this	-> displaySize	= nrSegments * (1 - overlap) * SEGMENT_SIZE;
 	theScope	= new Scope (panoramaScope,
 	                             displaySize,
-	                             minFreq + (1 - overlapFraction) * fftFreq,
+	                             (int)(minFreq + overlap * fftFreq),
 	                             minFreq + nrSegments * segmentCoverage,
 	                             theDevice -> bitDepth (),
 	                             scalerBase,
@@ -286,7 +288,7 @@ void	panoramaViewer::handle_startButton () {
 	                                 displaySize,
 	                                 nrSegments,
 	                                 SEGMENT_SIZE,
-	                                 (1 - overlapFraction) * SEGMENT_SIZE,
+	                                 overlap * SEGMENT_SIZE,
 	                                 averager -> value ());
 	connect (theProcessor, SIGNAL (showDisplay ()),
 	         this, SLOT (handle_showDisplay ()));
@@ -304,6 +306,7 @@ void	panoramaViewer::TerminateProcess () {
 	spectrumSettings	-> setValue ("averaging", averager -> value ());
 	spectrumSettings	-> setValue ("scaleW", scalerWidth -> value ());
 	spectrumSettings	-> setValue ("scaleB", scalerBase -> value ());
+	spectrumSettings	-> setValue ("overlap", overlapper -> value ());
 	spectrumSettings	-> sync ();
 	if (theProcessor != nullptr)
 	   delete		theProcessor;

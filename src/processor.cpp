@@ -51,6 +51,7 @@
 	                reinterpret_cast <fftwf_complex *>(fftBuffer),
 	                FFTW_FORWARD, FFTW_ESTIMATE);
 
+	fprintf (stderr, "in processor\n");
 	Window                  = new float [fftSize];
 	for (int i = 0; i < fftSize; i ++)
 	   Window [i] =

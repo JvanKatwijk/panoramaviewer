@@ -46,6 +46,7 @@ int res	= 1;
 
 QString	colorString	= "black";
 bool	brush;
+
 	plotgrid		= plot;
 	this	-> displaySize	= displaySize;
 	this	-> baseLine	= shifter (bitDepth);
@@ -106,7 +107,6 @@ void	Scope::show	(double *v) {
 	for (int i = 0; i < displaySize; i ++) {
 	   Y_Values [i] =  get_db (v [i]);
 	}
-
 
 	plotgrid        -> setAxisScale (QwtPlot::xBottom,
                                          X_Values [0],
