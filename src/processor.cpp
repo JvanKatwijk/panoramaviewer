@@ -160,13 +160,11 @@ double segment [segmentSize];
 	   for (int i = 0; i < segmentSize - overlapSize; i ++)
 	      displayVector [i] = segment [overlapSize + i];
 	else {
-	   int startPos	= segmentSize - overlapSize +
-	                  (segmentNo - 1) * (segmentSize - overlapSize);
+	   int startPos	= segmentNo * (segmentSize - overlapSize);
 //	   fprintf (stderr, "segment %d starts at %d (%d)\n",
 //	                                     segmentNo, startPos, displaySize);
 	   for (int i = 0; i < overlapSize / 2; i ++)
 	      displayVector [startPos - overlapSize / 2 + i] = 
-//	      0.5 * displayVector [startPos - overlapSize / 2 + i] +
 	                                segment [overlapSize / 2 + i];
 	   for (int i = overlapSize; i < segmentSize; i ++)
 	      displayVector [startPos + (i - overlapSize)] = segment [i];

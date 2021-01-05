@@ -10,7 +10,7 @@
  * @license GPL-3.0+ <http://spdx.org/licenses/GPL-3.0+>
  *
  *	recoding, taking parts and extending for the airspyHandler interface
- *	for the SDR-J-DAB receiver.
+ *	for the panoramaviewer
  *	jan van Katwijk
  *	Lazy Chair Computing
  */
@@ -29,7 +29,7 @@ const	int	EXTIO_NS	=  8192;
 static
 const	int	EXTIO_BASE_TYPE_SIZE = sizeof (float);
 
-	airspyHandler::airspyHandler (QSettings *s):
+	airspyHandler::airspyHandler (QSettings *s, int rate):
 	                                     myFrame (nullptr),
 	                                     _I_Buffer  (4 * 1024 * 1024) {
 int	result, i;
@@ -130,7 +130,7 @@ uint32_t	rateCount;
 	(void) my_airspy_get_samplerates (device, &rateCount, 0);
 	my_airspy_get_samplerates (device, myBuffer, rateCount);
 	fprintf (stderr, "rateCount = %d\n", rateCount);
-	inputRate	= 10000000;
+	inputRate	= rate;
 	result = my_airspy_set_samplerate (device, inputRate);
 	if (result != AIRSPY_SUCCESS) {
            printf("airspy_set_samplerate() failed: %s (%d)\n",
@@ -285,7 +285,7 @@ static int cnt	= 0;
 
 	if (p -> freqChanging. load ()) {
 	   cnt += transfer -> sample_count;
-	   if (cnt >= p -> inputRate / 20) {
+	   if (cnt >= p -> inputRate / 5) {
 	      cnt = 0;
 	      p -> freqChanging. store (false);
 	   }

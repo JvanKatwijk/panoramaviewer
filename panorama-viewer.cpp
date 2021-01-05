@@ -52,20 +52,6 @@
 #endif
 #
 //
-static inline
-int32_t nearestTwoPower (int16_t n) {
-int32_t res     = 1;
-
-        if (n < 100)
-           return 128;
-        while (n != 0) {
-           n >>= 1;
-           res <<= 1;
-        }
-
-        return res;
-}
-
 	panoramaViewer::panoramaViewer (QSettings	*Si,
 	                                int		colibriIndex,
 	                                int		delayFraction,
@@ -89,11 +75,13 @@ int k;
 	scalerWidth	-> setValue (scaleW);
 	scalerBase	-> setValue (scaleB);
 	averager	-> setValue (avg);
-	this -> overlapFraction	= overlap;
+	this		-> overlapFraction	= overlap;
 	this -> show ();
 
 #ifdef	HAVE_SDRPLAY
-	deviceSelector	-> addItem ("sdrplay-v2");
+	deviceSelector	-> addItem ("sdrplay-v2-8000000");
+	deviceSelector	-> addItem ("sdrplay-v2-5000000");
+	deviceSelector	-> addItem ("sdrplay-v2-2000000");
 #endif
 #ifdef	HAVE_SDRPLAY_V3
 	deviceSelector	-> addItem ("sdrplay-v3");
@@ -108,7 +96,8 @@ int k;
 	deviceSelector	-> addItem ("rtlsdr");
 #endif
 #ifdef	HAVE_AIRSPY
-	deviceSelector	-> addItem ("airspy");
+	deviceSelector	-> addItem ("airspy-10000000");
+	deviceSelector	-> addItem ("airspy-2500000");
 #endif
 
 	if (deviceSelector	-> count () == 0) {
@@ -130,9 +119,29 @@ int k;
 
 void	panoramaViewer::activateDevice (const QString &s) {
 #ifdef	HAVE_SDRPLAY
-	if (s == "sdrplay-v2") {
+	if (s == "sdrplay-v2-8000000") {
 	   try {
-	   theDevice	= new sdrplayHandler (spectrumSettings);
+	   theDevice	= new sdrplayHandler (spectrumSettings, 8000000);
+	   } catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"),
+                                          tr ("Opening  device failed\n"));
+	      return;
+	   }
+	}
+	else
+	if (s == "sdrplay-v2-5000000") {
+	   try {
+	   theDevice	= new sdrplayHandler (spectrumSettings, 5000000);
+	   } catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"),
+                                          tr ("Opening  device failed\n"));
+	      return;
+	   }
+	}
+	else
+	if (s == "sdrplay-v2-2000000") {
+	   try {
+	   theDevice	= new sdrplayHandler (spectrumSettings, 2000000);
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                           tr ("Opening  device failed\n"));
@@ -194,9 +203,19 @@ void	panoramaViewer::activateDevice (const QString &s) {
 	else 	// cannot happen
 #endif
 #ifdef	HAVE_AIRSPY
-	if (s == "airspy") {
+	if (s == "airspy-10000000") {
 	   try {
-	      theDevice	= new airspyHandler (spectrumSettings);
+	      theDevice	= new airspyHandler (spectrumSettings, 10000000);
+	   } catch (int e) {
+	      QMessageBox::warning (this, tr ("sdr"),
+                                       tr ("Opening  device failed\n"));
+	      return;
+	   }
+	}
+	else
+	if (s == "airspy-2500000") {
+	   try {
+	      theDevice	= new airspyHandler (spectrumSettings, 2500000);
 	   } catch (int e) {
 	      QMessageBox::warning (this, tr ("sdr"),
                                        tr ("Opening  device failed\n"));
@@ -234,24 +253,26 @@ void	panoramaViewer::handle_startButton () {
 	this	-> minFreq		= midden - breedte / 2;
 	this	-> maxFreq		= midden + breedte / 2;
 	this	-> segmentCoverage	= this -> overlapFraction * fftFreq;
+	fprintf (stderr, "segment coverage %d\n", segmentCoverage);
 	if (minFreq < 0)
 	   minFreq = MHz (10);
 	if (maxFreq > MHz (2000))
 	   maxFreq = MHz (1999);
-	if (minFreq >= maxFreq) {
+	if ((minFreq >= maxFreq) || (maxFreq < minFreq + fftFreq)) {
 	   this -> nrSegments	= 1;
 	   this -> maxFreq	= minFreq + fftFreq;
 	}
-	else
+	else 
 	   this	-> nrSegments		= (int)floor ((maxFreq - minFreq) / segmentCoverage);
-	this	-> startFreq		= minFreq + (overlapFraction - 0.5) * fftFreq;
+
+	fprintf (stderr, "nr segments %d\n", nrSegments);
 	this	-> displaySize		= nrSegments * overlapFraction * SEGMENT_SIZE;
 	this	-> maxFreq		= minFreq + nrSegments * segmentCoverage;
 	
 	theScope	= new Scope (panoramaScope,
 	                             displaySize,
-	                             minFreq,
-	                             this -> maxFreq,
+	                             minFreq + (1 - overlapFractiomn) * fftFreq,
+	                             minFreq + nrSegments * segmentCoverage,
 	                             theDevice -> bitDepth (),
 	                             scalerBase,
 	                             scalerWidth);
@@ -260,12 +281,12 @@ void	panoramaViewer::handle_startButton () {
 	theProcessor	= new Processor (theDevice,
 	                                 &_C_Buffer,
 	                                 FFT_SIZE,
-	                                 startFreq,
+	           	                 minFreq + fftFreq / 2,
 	                                 segmentCoverage,
 	                                 displaySize,
 	                                 nrSegments,
 	                                 SEGMENT_SIZE,
-	                                 OVERLAP_SIZE,
+	                                 (1 - overlapFraction) * SEGMENT_SIZE,
 	                                 averager -> value ());
 	connect (theProcessor, SIGNAL (showDisplay ()),
 	         this, SLOT (handle_showDisplay ()));

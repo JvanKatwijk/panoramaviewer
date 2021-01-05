@@ -77,7 +77,7 @@ typedef int (*pfn_airspy_board_partid_serialno_read)(struct airspy_device* devic
 class airspyHandler: public deviceHandler, public Ui_airspyWidget {
 Q_OBJECT
 public:
-			airspyHandler	(QSettings *);
+			airspyHandler	(QSettings *, int rate);
 			~airspyHandler	(void);
 	int32_t		get_fftWidth 	(void);
 	void		setVFOFrequency (int32_t);

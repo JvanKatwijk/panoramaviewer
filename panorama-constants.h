@@ -53,19 +53,14 @@ typedef	void	*HINSTANCE;
 //#define FFT_FREQ	8000000
 //
 //	derived values
-//#define	START_FREQ	MIN_FREQ + (0.375 * FFT_FREQ)
 #define SEGMENT_SIZE    128
-#define FFT_SIZE	4096
-//#define	SEGMENT_COVERAGE	(0.875 * FFT_FREQ)
-//#define NR_SEGMENTS	(int)((MAX_FREQ - MIN_FREQ) / SEGMENT_COVERAGE)
-#define OVERLAP_SIZE	(SEGMENT_SIZE / 8)
-//#define DISPLAY_SIZE    (NR_SEGMENTS * (SEGMENT_SIZE - OVERLAP_SIZE))
+#define FFT_SIZE	2048
 
 /*
  */
-typedef	float DSPFLOAT;
+//typedef	float DSPFLOAT;
 
-typedef	std::complex<DSPFLOAT>	DSPCOMPLEX;
+//typedef	std::complex<DSPFLOAT>	DSPCOMPLEX;
 
 /*
  */
@@ -80,27 +75,27 @@ typedef	std::complex<DSPFLOAT>	DSPCOMPLEX;
 //
 //	common, simple but useful, functions
 static inline
-bool	isIndeterminate (DSPFLOAT x) {
+bool	isIndeterminate (float x) {
 	return x != x;
 }
 
 static inline
 bool	isInfinite (double x) {
-	return x == numeric_limits<DSPFLOAT>::infinity ();
+	return x == numeric_limits<float>::infinity ();
 }
 //
 static inline
-DSPCOMPLEX cmul (DSPCOMPLEX x, float y) {
-	return DSPCOMPLEX (real (x) * y, imag (x) * y);
+std::complex<float> cmul (std::complex<float> x, float y) {
+	return std::complex<float> (real (x) * y, imag (x) * y);
 }
 
 static inline
-DSPCOMPLEX cdiv (DSPCOMPLEX x, float y) {
-	return DSPCOMPLEX (real (x) / y, imag (x) / y);
+std::complex<float> cdiv (std::complex<float> x, float y) {
+	return std::complex<float> (real (x) / y, imag (x) / y);
 }
 
 static inline
-float	get_db (DSPFLOAT x) {
+float	get_db (float x) {
 	return 20 * log10 ((x + 1) / (float)(1024));
 }
 #endif

@@ -50,7 +50,7 @@ int     get_lnaGRdB (int hwVersion, int lnaState) {
 	}
 }
 
-	sdrplayHandler::sdrplayHandler  (QSettings *s):
+	sdrplayHandler::sdrplayHandler  (QSettings *s, int rate):
 	                                   _I_Buffer (2 * 1024 * 1024),
 	                                   myFrame (nullptr) {
 mir_sdr_ErrT err;
@@ -62,7 +62,7 @@ mir_sdr_GainValuesT gainDesc;
 sdrplaySelect	*sdrplaySelector;
 
 	sdrplaySettings		= s;
-	this	-> inputRate	= 8000000;
+	this	-> inputRate	= rate;
 	setupUi (&myFrame);
 	myFrame	. show ();
 	antennaSelector		-> hide ();
@@ -531,7 +531,7 @@ int     lnaState        = lnaGainSetting -> value ();
 }
 
 int	sdrplayHandler::get_fftWidth	() {
-	return 8000000;
+	return inputRate;
 }
 
 void	sdrplayHandler::setVFOFrequency	(int32_t newFrequency) {
@@ -589,7 +589,7 @@ mir_sdr_ErrT err;
 //	The brave old getSamples. For the mirics stick, we get
 //	size still in I/Q pairs
 //	Note that the sdrPlay returns 10 bit values
-int32_t	sdrplayHandler::getSamples (DSPCOMPLEX *V, int32_t size) { 
+int32_t	sdrplayHandler::getSamples (std::complex<float> *V, int32_t size) { 
 	return _I_Buffer. getDataFromBuffer (V, size);
 }
 

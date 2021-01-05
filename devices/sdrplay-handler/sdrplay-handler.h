@@ -94,7 +94,7 @@ typedef mir_sdr_ErrT (*pfn_mir_sdr_ReleaseDeviceIdx) (unsigned int);
 class	sdrplayHandler: public deviceHandler, public Ui_sdrplayWidget {
 Q_OBJECT
 public:
-		sdrplayHandler		(QSettings *);
+		sdrplayHandler		(QSettings *, int);
 		~sdrplayHandler		();
 	int	get_fftWidth		();
 	void	setVFOFrequency		(int32_t);
