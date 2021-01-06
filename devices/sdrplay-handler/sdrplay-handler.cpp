@@ -231,7 +231,10 @@ ULONG APIkeyValue_length = 255;
 	   throw (25);
 	}
 
-     switch (hwVersion) {
+	nrBits	= 12;
+	
+	denominator  = 2048;
+	switch (hwVersion) {
 	   case 1:              // old RSP
 	      lnaGainSetting    -> setRange (0, 3);
 	      deviceLabel       -> setText ("RSP-I");
@@ -243,20 +246,15 @@ ULONG APIkeyValue_length = 255;
 	   case 3:
 	      lnaGainSetting    -> setRange (0, 9);
 	      deviceLabel       -> setText ("RSP-DUO");
+	      nrBits		= 14;
+	      denominator	= 8192;
 	      break;
 	   default:
 	      lnaGainSetting    -> setRange (0, 9);
 	      deviceLabel       -> setText ("RSP-1A");
+	      nrBits		= 14;
+	      denominator	= 8192;
 	      break;
-	}
-
-	if ((hwVersion == 255) || (hwVersion == 3)) {
-	   nrBits       = 14;
-	   denominator  = 8192;
-	}
-	else {
-	   nrBits       = 12;
-	   denominator  = 2048;
 	}
 
 	if (hwVersion == 2) {
@@ -602,7 +600,7 @@ void	sdrplayHandler::resetBuffer	(void) {
 }
 
 int16_t	sdrplayHandler::bitDepth	(void) {
-	return 12;
+	return nrBits;
 }
 
 void    sdrplayHandler::set_ppmControl (int ppm) {
