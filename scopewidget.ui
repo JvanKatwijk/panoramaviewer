@@ -150,7 +150,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overlap. In order to smoothen the transition between successively displayed segments, the last part of a displayed segment is combined with the first part of the next segment. This value indicates&lt;/p&gt;&lt;p&gt;the extend of the overlap (values allowed to 500)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="minimum">
-          <number>0</number>
+          <number>10</number>
          </property>
          <property name="maximum">
           <number>500</number>
