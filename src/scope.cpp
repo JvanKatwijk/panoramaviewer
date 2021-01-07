@@ -125,7 +125,15 @@ void	Scope::show	(double *v) {
 }
 
 void	Scope::rightMouseClick (const QPointF&point) {
-	clickedwithRight ((int)(point. x()), (int)(point. y()));
+int     i;
+double  res     = -1;
+        for (int i = 1; i < displaySize; i ++)
+           if ((X_Values [i - 1] <= point. x()) &&
+               (point. x () <= X_Values [i])) {
+              res = Y_Values [i];
+              break;
+        }
+	clickedwithRight ((int)(point. x()), (int)res);
 }
 
 float	Scope::get_db (float x) {
